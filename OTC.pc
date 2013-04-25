@@ -1,20 +1,9 @@
 /*****************************************************************************
-  Ô´³ÌÐòÃû³Æ: OTC.PC
-  Èí¼þÖø×÷È¨: ºãÉú¹«Ë¾ »ù½ð
-  ÏµÍ³Ãû³Æ:   OTC
-  Ä£¿éÃû³Æ:   OTCÒµÎñÄ£¿é
-  ¹¦ÄÜËµÃ÷:    Íê³ÉOTC¹ý»§ºÍ·ÑÓÃ¼ÆËã
-  ÊÊÓÃ»·¾³:
-  ×÷Õß:     tianzx   xiaym   20130418
-  ÐÞ¸Ä¼ÇÂ¼1£º
-  ÐÞ¸ÄÈËÔ±£º
-  ÐÞ¸ÄÈÕÆÚ:
-  ÐÞ¸ÄËµÃ÷:
- *****************************************************************************/
+  Ô´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: OTC.PC
 #include "fund.h"
 #include "OTC.h"
 
-/*È«¾Ö±äÁ¿¶¨Òå*/
+/*È«ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
 int GTCFareZoneNum=0;
 int GOTCLiqudiateNum=0;
 extern int TTransferCommissionCfmDeal();
@@ -23,14 +12,14 @@ OTCFAREZONE *GOTCFAREZONE=NULL;
 OTCLIQUDIATE *GOTCLIQUDIATE=NULL;
 
 /***************************************************************************************************
-  º¯ÊýÃû³Æ: LoadOTCFareZone 
-  º¯Êý¹¦ÄÜ: ¼ÓÔØOTC×ªÈÃ·ÑÓÃÉèÖÃ
-  º¯ÊýËµÃ÷:
-  ÊäÈë²ÎÊý: 
-  Êä³ö²ÎÊý:ÎÞ
-  ·µ »Ø Öµ:0:ÕýÈ·;ÆäËû:Ê§°Ü
-  ±àÕß£º ÏÄÒ»Ãñ
-  Ê±¼ä£º 2013-04-16
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: LoadOTCFareZone 
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½ï¿½ï¿½OTC×ªï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½:
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: 
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½
+  ï¿½ï¿½ ï¿½ï¿½ Öµ:0:ï¿½ï¿½È·;ï¿½ï¿½ï¿½ï¿½:Ê§ï¿½ï¿½
+  ï¿½ï¿½ï¿½ß£ï¿½ ï¿½ï¿½Ò»ï¿½ï¿½
+  Ê±ï¿½ä£º 2013-04-16
  ***************************************************************************************************/
 int LoadOTCFareZone(void)
 {
@@ -51,7 +40,7 @@ int LoadOTCFareZone(void)
     {
         if((GOTCFAREZONE = (OTCFAREZONE*)malloc(sizeof(OTCFAREZONE)*GTCFareZoneNum)) == NULL)
         {
-            WriteLog(0,"FILE:%sLINE:%d %s\n",__FILE__,__LINE__,"ÏµÍ³·ÖÅäÄÚ´æ´íÎó£¡");
+            WriteLog(0,"FILE:%sLINE:%d %s\n",__FILE__,__LINE__,"ÏµÍ³ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
             return ERR_SYS;
         }
         memset(GOTCFAREZONE, 0, sizeof(OTCFAREZONE)*GTCFareZoneNum);
@@ -101,14 +90,14 @@ error:
 }
 
 /***************************************************************************************************
-  º¯ÊýÃû³Æ: LoadOTCLiqudiate 
-  º¯Êý¹¦ÄÜ: ¼ÓÔØOTC×ªÈÃÇåËãÉèÖÃ
-  º¯ÊýËµÃ÷:
-  ÊäÈë²ÎÊý: 
-  Êä³ö²ÎÊý:ÎÞ
-  ·µ »Ø Öµ:0:ÕýÈ·;ÆäËû:Ê§°Ü
-  ±àÕß£º ÏÄÒ»Ãñ
-  Ê±¼ä£º 2013-04-16
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: LoadOTCLiqudiate 
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½ï¿½ï¿½OTC×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½:
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: 
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½
+  ï¿½ï¿½ ï¿½ï¿½ Öµ:0:ï¿½ï¿½È·;ï¿½ï¿½ï¿½ï¿½:Ê§ï¿½ï¿½
+  ï¿½ï¿½ï¿½ß£ï¿½ ï¿½ï¿½Ò»ï¿½ï¿½
+  Ê±ï¿½ä£º 2013-04-16
  ***************************************************************************************************/
 int LoadOTCLiqudiate(void)
 {
@@ -128,7 +117,7 @@ int LoadOTCLiqudiate(void)
     {
         if((GOTCLIQUDIATE= (OTCLIQUDIATE*)malloc(sizeof(OTCLIQUDIATE)*GOTCLiqudiateNum)) == NULL)
         {
-            WriteLog(0,"FILE:%sLINE:%d %s\n",__FILE__,__LINE__,"ÏµÍ³·ÖÅäÄÚ´æ´íÎó£¡");
+            WriteLog(0,"FILE:%sLINE:%d %s\n",__FILE__,__LINE__,"ÏµÍ³ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
             return ERR_SYS;
         }
         memset(GOTCLIQUDIATE, 0, sizeof(OTCLIQUDIATE)*GOTCLiqudiateNum);
@@ -165,21 +154,21 @@ error:
 }
 
 /***************************************************************************************************
-  º¯ÊýÃû³Æ: GetOTCFareZone 
-  º¯Êý¹¦ÄÜ: »ñÈ¡OTC×ªÈÃ·ÑÓÃÉèÖÃ
-  º¯ÊýËµÃ÷:
-  ÊäÈë²ÎÊý: 
-  Êä³ö²ÎÊý:ÎÞ
-  ·µ »Ø Öµ:0:ÕýÈ·;ÆäËû:Ê§°Ü
-  ±àÕß£º ÏÄÒ»Ãñ
-  Ê±¼ä£º 2013-04-16
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: GetOTCFareZone 
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½È¡OTC×ªï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½:
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: 
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½
+  ï¿½ï¿½ ï¿½ï¿½ Öµ:0:ï¿½ï¿½È·;ï¿½ï¿½ï¿½ï¿½:Ê§ï¿½ï¿½
+  ï¿½ï¿½ï¿½ß£ï¿½ ï¿½ï¿½Ò»ï¿½ï¿½
+  Ê±ï¿½ä£º 2013-04-16
  ***************************************************************************************************/
 OTCFAREZONE  *GetOTCFareZone(const char *infundcode,  const char *sharetype, const char *commissiontype, const char *outbusinflag, const char *infaretype, const char incusttype, double inbalance, long holddays)
 {
     int i = 0;
     for(i=0;i<GTCFareZoneNum;i++)
     {
-        WriteLog(0, "[%s:%d, GOTCFAREZONE[i].fundcode£º%s]\n", __FILE__, __LINE__, GOTCFAREZONE[i].fundcode);
+        WriteLog(0, "[%s:%d, GOTCFAREZONE[i].fundcodeï¿½ï¿½%s]\n", __FILE__, __LINE__, GOTCFAREZONE[i].fundcode);
 
         if (
                 strcmp(infundcode, GOTCFAREZONE[i].fundcode)==0 && \
@@ -199,20 +188,20 @@ OTCFAREZONE  *GetOTCFareZone(const char *infundcode,  const char *sharetype, con
         }
     }
 
-    WriteLog(0, "[%s:%d, ÎÞOTC×ªÈÃ·ÑÉèÖÃÐÅÏ¢, »ù½ð´úÂëÎª£º%s]\n", __FILE__, __LINE__, infundcode);
+    WriteLog(0, "[%s:%d, ï¿½ï¿½OTC×ªï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½%s]\n", __FILE__, __LINE__, infundcode);
     return NULL;
 
 }
 
 /***************************************************************************************************
-  º¯ÊýÃû³Æ: GetOTCLiqudiate 
-  º¯Êý¹¦ÄÜ: »ñÈ¡OTC×ªÈÃÇåËãÉèÖÃ
-  º¯ÊýËµÃ÷:
-  ÊäÈë²ÎÊý: 
-  Êä³ö²ÎÊý:ÎÞ
-  ·µ »Ø Öµ:0:ÕýÈ·;ÆäËû:Ê§°Ü
-  ±àÕß£º ÏÄÒ»Ãñ
-  Ê±¼ä£º 2013-04-16
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: GetOTCLiqudiate 
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½È¡OTC×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½:
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: 
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½
+  ï¿½ï¿½ ï¿½ï¿½ Öµ:0:ï¿½ï¿½È·;ï¿½ï¿½ï¿½ï¿½:Ê§ï¿½ï¿½
+  ï¿½ï¿½ï¿½ß£ï¿½ ï¿½ï¿½Ò»ï¿½ï¿½
+  Ê±ï¿½ä£º 2013-04-16
  ***************************************************************************************************/
 OTCLIQUDIATE *GetOTCLiqudiate(const char *infundcode, const char *insharetype, const char *incommissiontype, const char *inoutbusinflag)
 {
@@ -230,19 +219,19 @@ OTCLIQUDIATE *GetOTCLiqudiate(const char *infundcode, const char *insharetype, c
         }
     }
 
-    WriteLog(0, "[%s:%d, ÎÞOTCÇåËãÉèÖÃÐÅÏ¢, »ù½ð´úÂëÎª£º%s]\n", __FILE__, __LINE__, infundcode);
+    WriteLog(0, "[%s:%d, ï¿½ï¿½OTCï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½%s]\n", __FILE__, __LINE__, infundcode);
     return NULL;
 }
 
 /***************************************************************************************************
-  º¯ÊýÃû³Æ: FillTransferCommissionCfm 
-  º¯Êý¹¦ÄÜ: ¸ù¾ÝTTransferCommission½á¹¹ÌåÄÚÈÝ£¬Ìî³äTTransferCommissionCfm½á¹¹Ìå 
-  º¯ÊýËµÃ÷:
-  ÊäÈë²ÎÊý: 
-  Êä³ö²ÎÊý:ÎÞ
-  ·µ »Ø Öµ:0:ÕýÈ·;ÆäËû:Ê§°Ü
-  ±àÕß£º ÏÄÒ»Ãñ
-  Ê±¼ä£º 2013-04-16
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: FillTransferCommissionCfm 
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½ï¿½ï¿½TTransferCommissionï¿½á¹¹ï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½ï¿½ï¿½ï¿½ï¿½TTransferCommissionCfmï¿½á¹¹ï¿½ï¿½ 
+  ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½:
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: 
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½
+  ï¿½ï¿½ ï¿½ï¿½ Öµ:0:ï¿½ï¿½È·;ï¿½ï¿½ï¿½ï¿½:Ê§ï¿½ï¿½
+  ï¿½ï¿½ï¿½ß£ï¿½ ï¿½ï¿½Ò»ï¿½ï¿½
+  Ê±ï¿½ä£º 2013-04-16
  ***************************************************************************************************/
 int FillTransferCommissionCfm( TRANSFERCOMMISSIONCFM *t, TRANSFERCOMMISSION *s,   int nCnt)
 {
@@ -302,24 +291,24 @@ int FillTransferCommissionCfm( TRANSFERCOMMISSIONCFM *t, TRANSFERCOMMISSION *s, 
 }
 
 /***************************************************************************************************
-  º¯ÊýÃû³Æ: AddTTransferCommissionCfm 
-  º¯Êý¹¦ÄÜ: ¸ù¾ÝAddTTransferCommissionCfm½á¹¹ÌåÄÚÈÝ£¬Ð´±íTTransferCommissionCfm
-  º¯ÊýËµÃ÷:
-  ÊäÈë²ÎÊý: 
-  Êä³ö²ÎÊý:ÎÞ
-  ·µ »Ø Öµ:0:ÕýÈ·;ÆäËû:Ê§°Ü
-  ±àÕß£º ÏÄÒ»Ãñ
-  Ê±¼ä£º 2013-04-16
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: AddTTransferCommissionCfm 
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½ï¿½ï¿½AddTTransferCommissionCfmï¿½á¹¹ï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½Ð´ï¿½ï¿½TTransferCommissionCfm
+  ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½:
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: 
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½
+  ï¿½ï¿½ ï¿½ï¿½ Öµ:0:ï¿½ï¿½È·;ï¿½ï¿½ï¿½ï¿½:Ê§ï¿½ï¿½
+  ï¿½ï¿½ï¿½ß£ï¿½ ï¿½ï¿½Ò»ï¿½ï¿½
+  Ê±ï¿½ä£º 2013-04-16
  ***************************************************************************************************/
 int AddTTransferCommissionCfm(TRANSFERCOMMISSIONCFM *s, int nCnt)
 {
     EXEC SQL WHENEVER SQLERROR GOTO error;
     int nidx= 0;
-    WriteLog(0, "[ÎÄ¼þÃû=%s, ÐÐÊý=%d, %s]\n", __FILE__, __LINE__, "ÐÞ¸ÄÈ·ÈÏÊý¾Ý¿ªÊ¼......");
+    WriteLog(0, "[ï¿½Ä¼ï¿½ï¿½ï¿½=%s, ï¿½ï¿½ï¿½ï¿½=%d, %s]\n", __FILE__, __LINE__, "ï¿½Þ¸ï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½Ê¼......");
 
     if (s==NULL)
     {
-        WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "Ð´TTransferCommissionCfm±í³ö´í¡£");
+        WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "Ð´TTransferCommissionCfmï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
         return -1;
     }
 
@@ -458,14 +447,14 @@ error:
 }
 
 /***************************************************************************************************
-  º¯ÊýÃû³Æ: CrtOTCCustInfo 
-  º¯Êý¹¦ÄÜ: Éú³ÉÈ«Á¿ÕË»§ÐÅÏ¢
-  º¯ÊýËµÃ÷:
-  ÊäÈë²ÎÊý: 
-  Êä³ö²ÎÊý:ÎÞ
-  ·µ »Ø Öµ:0:ÕýÈ·;ÆäËû:Ê§°Ü
-  ±àÕß£º ÏÄÒ»Ãñ
-  Ê±¼ä£º 2013-04-16
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: CrtOTCCustInfo 
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½ï¿½ï¿½È«ï¿½ï¿½ï¿½Ë»ï¿½ï¿½ï¿½Ï¢
+  ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½:
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: 
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½
+  ï¿½ï¿½ ï¿½ï¿½ Öµ:0:ï¿½ï¿½È·;ï¿½ï¿½ï¿½ï¿½:Ê§ï¿½ï¿½
+  ï¿½ï¿½ï¿½ß£ï¿½ ï¿½ï¿½Ò»ï¿½ï¿½
+  Ê±ï¿½ä£º 2013-04-16
  ***************************************************************************************************/
 int CrtOTCCustInfo(void)
 {
@@ -524,19 +513,19 @@ error:
 }
 
 /***************************************************************************************************
-  º¯ÊýÃû³Æ: CrtOTCShareInfo 
-  º¯Êý¹¦ÄÜ: Éú³ÉÈ«Á¿ÕË»§ÐÅÏ¢
-  º¯ÊýËµÃ÷:
-  ÊäÈë²ÎÊý: 
-  Êä³ö²ÎÊý:ÎÞ
-  ·µ »Ø Öµ:0:ÕýÈ·;ÆäËû:Ê§°Ü
-  ±àÕß£º ÏÄÒ»Ãñ
-  Ê±¼ä£º 2013-04-16
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: CrtOTCShareInfo 
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½ï¿½ï¿½È«ï¿½ï¿½ï¿½Ë»ï¿½ï¿½ï¿½Ï¢
+  ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½:
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: 
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½
+  ï¿½ï¿½ ï¿½ï¿½ Öµ:0:ï¿½ï¿½È·;ï¿½ï¿½ï¿½ï¿½:Ê§ï¿½ï¿½
+  ï¿½ï¿½ï¿½ß£ï¿½ ï¿½ï¿½Ò»ï¿½ï¿½
+  Ê±ï¿½ä£º 2013-04-16
  ***************************************************************************************************/
 int CrtOTCShareInfo(void)
 {
     EXEC SQL WHENEVER SQLERROR GOTO error;
-    WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "Éú³ÉÈ«Á¿ÕË»§ÐÅÏ¢¿ªÊ¼¡£");
+    WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "ï¿½ï¿½ï¿½ï¿½È«ï¿½ï¿½ï¿½Ë»ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½Ê¼ï¿½ï¿½");
     EXEC SQL TRUNCATE TABLE TOTCShareInfo;
     EXEC SQL INSERT INTO TOTCShareInfo(
             C_tacode,
@@ -611,7 +600,7 @@ int CrtOTCShareInfo(void)
                    WHERE a.c_fundcode=b.c_fundcode(+)
                    AND a.c_sharetype=b.c_sharetype(+);
     EXEC SQL COMMIT;
-    WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "Éú³ÉÈ«Á¿ÕË»§ÐÅÏ¢½áÊø¡£");
+    WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "ï¿½ï¿½ï¿½ï¿½È«ï¿½ï¿½ï¿½Ë»ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
 
     return 0;
 
@@ -623,11 +612,11 @@ error:
 
 
 /***************************************************************************
-  º¯ÊýÃû³Æ:OTCInitialVar
-  º¯Êý¹¦ÄÜ:Ïà¹ØÏµÍ³Êý¾Ý³õÊ¼»¯
-  ÊäÈë²ÎÊý:
-  Êä³ö²ÎÊý:
-  ·µ »Ø Öµ:-1:Ê§°Ü 0:³É¹¦
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:OTCInitialVar
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½ï¿½ï¿½ÏµÍ³ï¿½ï¿½ï¿½Ý³ï¿½Ê¼ï¿½ï¿½
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:
+  ï¿½ï¿½ ï¿½ï¿½ Öµ:-1:Ê§ï¿½ï¿½ 0:ï¿½É¹ï¿½
  ***************************************************************************/
 int OTCInitialVar(void)
 {
@@ -635,17 +624,17 @@ int OTCInitialVar(void)
 
 
 
-    /*¼ÓÔØÄÚ´æ*/
+    /*ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½*/
     if((nil = InitialVar(0)) != 0)
     {
         return nil; 
     }
 
-    /*¼ÓÔØOTCÏà¹Ø²ÎÊý*/
+    /*ï¿½ï¿½ï¿½ï¿½OTCï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½*/
     nil=LoadOTCFareZone();
     if (nil !=0)
     {
-        WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "¼ÓÔØ·ÑÂÊÉèÖÃ³ö´í¡£" );
+        WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "ï¿½ï¿½ï¿½Ø·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã³ï¿½ï¿½ï¿½ï¿½ï¿½" );
         return -1;
 
     }
@@ -653,60 +642,60 @@ int OTCInitialVar(void)
     nil=LoadOTCLiqudiate();
     if (nil !=0)
     {
-        WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "¼ÓÔØÇåËãÉèÖÃ³ö´í¡£" );
+        WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã³ï¿½ï¿½ï¿½ï¿½ï¿½" );
         return -1;
 
     }
 
-    /*¼ÓÔØÏµÍ³²ÎÊý*/
-    //GSysParameter.OTCTransferAgent=atoi(GetSysValue("System","OTCTransferAgent","0")); /*xiaym TA1907 2013-04-16 20130505Build  ÖÐÐÅÖ¤È¯¿ªÍ¨OTCµÇ¼ÇÍÐ¹Ü¹¦ÄÜ*/
+    /*ï¿½ï¿½ï¿½ï¿½ÏµÍ³ï¿½ï¿½ï¿½ï¿½*/
+    //GSysParameter.OTCTransferAgent=atoi(GetSysValue("System","OTCTransferAgent","0")); /*xiaym TA1907 2013-04-16 20130505Build  ï¿½ï¿½ï¿½ï¿½Ö¤È¯ï¿½ï¿½Í¨OTCï¿½Ç¼ï¿½ï¿½Ð¹Ü¹ï¿½ï¿½ï¿½*/
 
     return 0;
 }
 
 /***************************************************************************
-  º¯ÊýÃû³Æ:sv_OTCCfmDeal
-  º¯Êý¹¦ÄÜ:×ª»»È·ÈÏ´¦Àí
-  ÊäÈë²ÎÊý: TPSVCINFO *rqst; ²»ÓÃ
-  Êä³ö²ÎÊý: TPSVCINFO *rqst;
-  ³É¹¦£º0;OK
-  Ê§°Ü£º1;´íÎóÔ­Òò
-  ·µ »Ø Öµ:ÎÞ
-  ±àÕß£º ÏÄÒ»Ãñ
-  Ê±¼ä£º2013-04-25
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:sv_OTCCfmDeal
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:×ªï¿½ï¿½È·ï¿½Ï´ï¿½ï¿½ï¿½
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: TPSVCINFO *rqst; ï¿½ï¿½ï¿½ï¿½
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: TPSVCINFO *rqst;
+  ï¿½É¹ï¿½ï¿½ï¿½0;OK
+  Ê§ï¿½Ü£ï¿½1;ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½
+  ï¿½ï¿½ ï¿½ï¿½ Öµ:ï¿½ï¿½
+  ï¿½ï¿½ï¿½ß£ï¿½ ï¿½ï¿½Ò»ï¿½ï¿½
+  Ê±ï¿½ä£º2013-04-25
  ***************************************************************************/
 int  sv_OTCCfmDeal(TPSVCINFO *rqst)
 {
     int nil=0;
     char *sBuf = NULL;
 
-    WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "×ª»»È·ÈÏ´¦Àí³õÊ¼»¯¿ªÊ¼¡£");
+    WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "×ªï¿½ï¿½È·ï¿½Ï´ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½");
 
     sBuf = tpalloc("STRING",NULL,BUF_SIZE);
     if(sBuf == NULL) {
-        WriteLog(0,"·ÖÅäÄÚ´æ´íÎó£¡");
+        WriteLog(0,"ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
         return -1;
     }
 
     nil= OTCInitialVar();
     if (nil !=0 )
     {
-        WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "OTC³õÊ¼»¯³ö´í¡£" );
+        WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "OTCï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½" );
         return -1;
     }
 
-    WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "×ª»»È·ÈÏ´¦Àí³õÊ¼»¯½áÊø¡£");
+    WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "×ªï¿½ï¿½È·ï¿½Ï´ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
 
-    WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "OTC×ª»»È·ÈÏ´¦Àí¿ªÊ¼¡£");
+    WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "OTC×ªï¿½ï¿½È·ï¿½Ï´ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½");
 
     nil =TTransferCommissionCfmDeal();
     if (nil !=0 )
     {
-        WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "µ÷ÓÃTTransferCommissionCfmDealº¯Êý³ö´í¡£" );
+        WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "ï¿½ï¿½ï¿½ï¿½TTransferCommissionCfmDealï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½" );
         return -1;
     }
 
-    WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "OTC×ª»»È·ÈÏ´¦Àí½áÊø¡£");
+    WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "OTC×ªï¿½ï¿½È·ï¿½Ï´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
 
 
     strcpy(sBuf,"0;OK!");
@@ -717,12 +706,12 @@ int  sv_OTCCfmDeal(TPSVCINFO *rqst)
 }
 
 /*====================================================================================
-  º¯ÊýÃû³Æ£ºBusinCodeChange
-  º¯Êý¹¦ÄÜ:   OTCÄÚÍâ²¿ÒµÎñ´úÂë×ª»»
-  ÊäÈë²ÎÊý:   char *fundcode, char *sharetype
-  Êä³ö²ÎÊý£ºfundcode, sharetype)
-  ·µ  »Ø  Öµ:   0:ÕýÈ·£»ÆäËû:Ê§°Ü
-  ×÷        Õß:   tianzx
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½BusinCodeChange
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:   OTCï¿½ï¿½ï¿½â²¿Òµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:   char *fundcode, char *sharetype
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½fundcode, sharetype)
+  ï¿½ï¿½  ï¿½ï¿½  Öµ:   0:ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:Ê§ï¿½ï¿½
+  ï¿½ï¿½        ï¿½ï¿½:   tianzx
   =====================================================================================*/
 int BusinCodeChange(char *outfundcode, char *fundcode, char *sharetype)
 {
@@ -749,47 +738,47 @@ sqlerr:
 }
 
 /*====================================================================================
-  º¯ÊýÃû³Æ£ºCltTransferCommissionFee
-  º¯Êý¹¦ÄÜ:¼ÆËã·ÑÓÃ¡£¸ù¾ÝÌõ¼þ£¬¼ÆËã·ÑÓÃ
-  ÊäÈë²ÎÊý:
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½CltTransferCommissionFee
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:
   ...
-  Êä³ö²ÎÊý:ÎÞ 
-  ·µ »Ø Öµ:0:ÕýÈ·£»ÆäËû:Ê§°Ü
-  ×÷        Õß:   tianzx
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½ 
+  ï¿½ï¿½ ï¿½ï¿½ Öµ:0:ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:Ê§ï¿½ï¿½
+  ï¿½ï¿½        ï¿½ï¿½:   tianzx
   =====================================================================================*/
 int CltTransferCommissionFee(TRANSFERCOMMISSIONCFM *t,int k, int iDtlRows)
 {
-    double fCfmBlc = 0.0;/*È·ÈÏ½ð¶î*/ 
+    double fCfmBlc = 0.0;/*È·ï¿½Ï½ï¿½ï¿½ï¿½*/ 
 
     fCfmBlc = t->shares[k] * t->tradeprice[k];    
-    t->confirmbalance[k] = fCfmBlc;/*È·ÈÏ½ð¶î*/
-    if(strcmp(t->outbusinflag[k],"20S") == 0)/*×ª»»³öÐèÒª¸ù¾ÝÃ÷Ï¸Ëã·Ñ*/
+    t->confirmbalance[k] = fCfmBlc;/*È·ï¿½Ï½ï¿½ï¿½ï¿½*/
+    if(strcmp(t->outbusinflag[k],"20S") == 0)/*×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ï¿½*/
     {
         CltTransferOutFee(t, k, iDtlRows);
     }
-    else/*×ªÈë°´ÕÕ»ã×Ü¼Æ·Ñ*/ 
+    else/*×ªï¿½ë°´ï¿½Õ»ï¿½ï¿½Ü¼Æ·ï¿½*/ 
     {
         CltTransferInFee(t,k);
     }        
-    /*×ªÈÃÊÖÐø·Ñ = ËùÓÐ·ÑÓÃ»ã×Ü*/
+    /*×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ = ï¿½ï¿½ï¿½Ð·ï¿½ï¿½Ã»ï¿½ï¿½ï¿½*/
     t->fare[k] = t->stampduty[k] + t->backfare[k] + t->handlecharge[k] + t->tafare[k] + t->agencyfee[k] + t->settlefee[k] + t->supervisionfee[k];
     return 0;
 }
 
 /*====================================================================================
-  º¯ÊýÃû³Æ£ºCltTransferOutFee
-  º¯Êý¹¦ÄÜ:¼ÆËã×ª³ö·ÑÓÃ¡£¸ù¾ÝÌõ¼þ£¬¼ÆËã×ª³ö·ÑÓÃ
-  ÊäÈë²ÎÊý:
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½CltTransferOutFee
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½Ã¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:
   ...
-  Êä³ö²ÎÊý:ÎÞ 
-  ·µ »Ø Öµ:0:ÕýÈ·£»ÆäËû:Ê§°Ü
-  ×÷        Õß:   tianzx
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½ 
+  ï¿½ï¿½ ï¿½ï¿½ Öµ:0:ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:Ê§ï¿½ï¿½
+  ï¿½ï¿½        ï¿½ï¿½:   tianzx
   =====================================================================================*/
 int CltTransferOutFee(TRANSFERCOMMISSIONCFM *t,int k, int iDtlRows)
 {
-    double fCfmBlc = 0.0;/*È·ÈÏ½ð¶î*/
+    double fCfmBlc = 0.0;/*È·ï¿½Ï½ï¿½ï¿½ï¿½*/
     int nIdx = 0;
-    long hold = 0;/*Ã÷Ï¸³ÖÓÐÈÕÆÚ*/
+    long hold = 0;/*ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
     double stampduty = 0.0;
     double backfare =0.0;
     double handlecharge = 0.0;
@@ -802,7 +791,7 @@ int CltTransferOutFee(TRANSFERCOMMISSIONCFM *t,int k, int iDtlRows)
     fCfmBlc = t->shares[k] * t->tradeprice[k];   
     for(nIdx = 0,gtShrDtlS = gtShrDtlSHd;nIdx < iDtlRows;nIdx++,gtShrDtlS = gtShrDtlS->tNxt)
     {
-        /*±äÁ¿ÇåÁã*/
+        /*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
         stampduty = 0.0;
         backfare =0.0;
         handlecharge = 0.0;
@@ -811,9 +800,9 @@ int CltTransferOutFee(TRANSFERCOMMISSIONCFM *t,int k, int iDtlRows)
         settlefee = 0.0;
         supervisionfee = 0.0;
         hold = 0;
-        /*¼ÆËãÃ÷Ï¸³ÖÓÐÈÕÆÚ*/
+        /*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
         EXEC SQL SELECT TRUNC(TO_DATE(:GConfirmDate,'yyyymmdd') - TO_DATE(:gtShrDtlS->sRegDt,'yyyymmdd')) INTO :hold FROM DUAL;
-        /*Ó¡»¨Ë°*/    
+        /*Ó¡ï¿½ï¿½Ë°*/    
         if((farezone = GetOTCFareZone(t->fundcode[k], t->sharetype[k], t->commissiontype[k], t->outbusinflag[k], "1", GetCustType(t->fundcode[k]), fCfmBlc, hold)) == NULL)
         {
             stampduty = 0;
@@ -824,8 +813,8 @@ int CltTransferOutFee(TRANSFERCOMMISSIONCFM *t,int k, int iDtlRows)
         }
         t->stampduty[k] += stampduty;
 
-        /*ºóÊÕ·Ñ*/
-        if(strcmp(gtShrDtlS->sSrcType,"T") != 0)/*ÐèÒªÊÕºóÊÕ·Ñ*/
+        /*ï¿½ï¿½ï¿½Õ·ï¿½*/
+        if(strcmp(gtShrDtlS->sSrcType,"T") != 0)/*ï¿½ï¿½Òªï¿½Õºï¿½ï¿½Õ·ï¿½*/
         {   
             if((farezone = GetOTCFareZone(t->fundcode[k], t->sharetype[k], t->commissiontype[k], t->outbusinflag[k], "2", GetCustType(t->fundcode[k]), fCfmBlc, hold)) == NULL)
             {
@@ -839,7 +828,7 @@ int CltTransferOutFee(TRANSFERCOMMISSIONCFM *t,int k, int iDtlRows)
         }
         t->backfare[k] += backfare; 
 
-        /*¾­ÊÖ·Ñ*/
+        /*ï¿½ï¿½ï¿½Ö·ï¿½*/
         if((farezone = GetOTCFareZone(t->fundcode[k], t->sharetype[k], t->commissiontype[k], t->outbusinflag[k], "3", GetCustType(t->fundcode[k]), fCfmBlc, hold)) == NULL)
         {
             handlecharge = 0;
@@ -850,7 +839,7 @@ int CltTransferOutFee(TRANSFERCOMMISSIONCFM *t,int k, int iDtlRows)
         }
         t->handlecharge[k] += handlecharge;
 
-        /*¹ý»§·Ñ*/
+        /*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
         if((farezone = GetOTCFareZone(t->fundcode[k], t->sharetype[k], t->commissiontype[k], t->outbusinflag[k], "4", GetCustType(t->fundcode[k]), fCfmBlc, hold)) == NULL)
         {
             tafare = 0;
@@ -861,7 +850,7 @@ int CltTransferOutFee(TRANSFERCOMMISSIONCFM *t,int k, int iDtlRows)
         }
         t->tafare[k] += tafare;
 
-        /*´úÀí·Ñ*/
+        /*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
         if((farezone = GetOTCFareZone(t->fundcode[k], t->sharetype[k], t->commissiontype[k], t->outbusinflag[k], "5", GetCustType(t->fundcode[k]), fCfmBlc, hold)) == NULL)
         {
             agencyfee = 0;
@@ -872,7 +861,7 @@ int CltTransferOutFee(TRANSFERCOMMISSIONCFM *t,int k, int iDtlRows)
         }
         t->agencyfee[k] += agencyfee;
 
-        /*½áËã·Ñ*/
+        /*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
         if((farezone = GetOTCFareZone(t->fundcode[k], t->sharetype[k], t->commissiontype[k], t->outbusinflag[k], "6", GetCustType(t->fundcode[k]), fCfmBlc, hold)) == NULL)
         {
             settlefee = 0;
@@ -882,7 +871,7 @@ int CltTransferOutFee(TRANSFERCOMMISSIONCFM *t,int k, int iDtlRows)
             settlefee = MIN((MAX((gtShrDtlS->fCfmShr * t->tradeprice[k] * farezone->ratio),farezone->minfare)),farezone->maxfare);
         }
         t->settlefee[k] += settlefee;
-        /*¼à¹Ü¹æ·Ñ*/
+        /*ï¿½ï¿½ï¿½Ü¹ï¿½ï¿½ï¿½*/
         if((farezone = GetOTCFareZone(t->fundcode[k], t->sharetype[k], t->commissiontype[k], t->outbusinflag[k], "7", GetCustType(t->fundcode[k]), fCfmBlc, hold)) == NULL)
         {
             supervisionfee = 0;
@@ -900,20 +889,20 @@ sqlerr:
 }
 
 /*====================================================================================
-  º¯ÊýÃû³Æ£ºCltTransferInFee
-  º¯Êý¹¦ÄÜ:¼ÆËã×ªÈë·ÑÓÃ¡£¸ù¾ÝÌõ¼þ£¬¼ÆËã×ªÈë·ÑÓÃ
-  ÊäÈë²ÎÊý:
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½CltTransferInFee
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½Ã¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:
   ...
-  Êä³ö²ÎÊý:ÎÞ 
-  ·µ »Ø Öµ:0:ÕýÈ·£»ÆäËû:Ê§°Ü
-  ×÷        Õß:   tianzx
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½ 
+  ï¿½ï¿½ ï¿½ï¿½ Öµ:0:ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:Ê§ï¿½ï¿½
+  ï¿½ï¿½        ï¿½ï¿½:   tianzx
   =====================================================================================*/
 int CltTransferInFee(TRANSFERCOMMISSIONCFM *t,int k)
 {
-    double fCfmBlc = 0.0;/*È·ÈÏ½ð¶î*/
+    double fCfmBlc = 0.0;/*È·ï¿½Ï½ï¿½ï¿½ï¿½*/
     OTCFAREZONE *farezone = NULL;
     fCfmBlc = t->shares[k] * t->tradeprice[k];   
-    /*Ó¡»¨Ë°*/    
+    /*Ó¡ï¿½ï¿½Ë°*/    
     if((farezone = GetOTCFareZone(t->fundcode[k], t->sharetype[k], t->commissiontype[k], t->outbusinflag[k], "1", GetCustType(t->fundcode[k]), fCfmBlc, 0)) == NULL)
     {
         t->stampduty[k] = 0;
@@ -922,7 +911,7 @@ int CltTransferInFee(TRANSFERCOMMISSIONCFM *t,int k)
     {
         t->stampduty[k] = MIN((MAX((fCfmBlc * farezone->ratio),farezone->minfare)),farezone->maxfare);
     }
-    /*ºóÊÕ·Ñ*/
+    /*ï¿½ï¿½ï¿½Õ·ï¿½*/
     if((farezone = GetOTCFareZone(t->fundcode[k], t->sharetype[k], t->commissiontype[k], t->outbusinflag[k], "2", GetCustType(t->fundcode[k]), fCfmBlc, 0)) == NULL)
     {
         t->backfare[k] = 0;
@@ -931,7 +920,7 @@ int CltTransferInFee(TRANSFERCOMMISSIONCFM *t,int k)
     {         
         t->backfare[k] = MIN((MAX((fCfmBlc * farezone->ratio),farezone->minfare)),farezone->maxfare);
     }
-    /*¾­ÊÖ·Ñ*/
+    /*ï¿½ï¿½ï¿½Ö·ï¿½*/
     if((farezone = GetOTCFareZone(t->fundcode[k], t->sharetype[k], t->commissiontype[k], t->outbusinflag[k], "3", GetCustType(t->fundcode[k]), fCfmBlc, 0)) == NULL)
     {
         t->handlecharge[k] = 0;
@@ -940,7 +929,7 @@ int CltTransferInFee(TRANSFERCOMMISSIONCFM *t,int k)
     {    
         t->handlecharge[k] = MIN((MAX((fCfmBlc * farezone->ratio),farezone->minfare)),farezone->maxfare);
     }
-    /*¹ý»§·Ñ*/
+    /*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
     if((farezone = GetOTCFareZone(t->fundcode[k], t->sharetype[k], t->commissiontype[k], t->outbusinflag[k], "4", GetCustType(t->fundcode[k]), fCfmBlc, 0)) == NULL)
     {
         t->tafare[k] = 0;
@@ -949,7 +938,7 @@ int CltTransferInFee(TRANSFERCOMMISSIONCFM *t,int k)
     {   
         t->tafare[k] = MIN((MAX((fCfmBlc * farezone->ratio),farezone->minfare)),farezone->maxfare);
     }
-    /*´úÀí·Ñ*/
+    /*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
     if((farezone = GetOTCFareZone(t->fundcode[k], t->sharetype[k], t->commissiontype[k], t->outbusinflag[k], "5", GetCustType(t->fundcode[k]), fCfmBlc, 0)) == NULL)
     {
         t->handlecharge[k] = 0;
@@ -958,7 +947,7 @@ int CltTransferInFee(TRANSFERCOMMISSIONCFM *t,int k)
     {    
         t->agencyfee[k] = MIN((MAX((fCfmBlc * farezone->ratio),farezone->minfare)),farezone->maxfare);
     }
-    /*½áËã·Ñ*/
+    /*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
     if((farezone = GetOTCFareZone(t->fundcode[k], t->sharetype[k], t->commissiontype[k], t->outbusinflag[k], "6", GetCustType(t->fundcode[k]), fCfmBlc, 0)) == NULL)
     {
         t->settlefee[k] = 0;
@@ -967,7 +956,7 @@ int CltTransferInFee(TRANSFERCOMMISSIONCFM *t,int k)
     {    
         t->settlefee[k] = MIN((MAX((fCfmBlc * farezone->ratio),farezone->minfare)),farezone->maxfare);
     }
-    /*¼à¹Ü¹æ·Ñ*/
+    /*ï¿½ï¿½ï¿½Ü¹ï¿½ï¿½ï¿½*/
     if((farezone = GetOTCFareZone(t->fundcode[k], t->sharetype[k], t->commissiontype[k], t->outbusinflag[k], "7", GetCustType(t->fundcode[k]), fCfmBlc, 0)) == NULL)
     {
         t->supervisionfee[k] = 0;
@@ -980,19 +969,19 @@ int CltTransferInFee(TRANSFERCOMMISSIONCFM *t,int k)
 
 }
 /*====================================================================================
-  º¯ÊýÃû³Æ£ºLiqudiateOTCTransfer
-  º¯Êý¹¦ÄÜ:   OTC¼ÆËã×ªÈÃÇåËãÏà¹ØÐÅÏ¢
-  ÊäÈë²ÎÊý:   TTransferCommissionCfm½á¹¹Ìå
-  Êä³ö²ÎÊý£ºTTransferCommissionCfm½á¹¹Ìå
-  ·µ  »Ø  Öµ:   0:ÕýÈ·£»ÆäËû:Ê§°Ü
-  ×÷        Õß:   tianzx
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½LiqudiateOTCTransfer
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:   OTCï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:   TTransferCommissionCfmï¿½á¹¹ï¿½ï¿½
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½TTransferCommissionCfmï¿½á¹¹ï¿½ï¿½
+  ï¿½ï¿½  ï¿½ï¿½  Öµ:   0:ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:Ê§ï¿½ï¿½
+  ï¿½ï¿½        ï¿½ï¿½:   tianzx
   =====================================================================================*/
 int LiqudiateOTCTransfer(TRANSFERCOMMISSIONCFM *t,int k)
 {
-    double settlementdays =0.0;/*½»ÊÕÌìÊý*/
+    double settlementdays =0.0;/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
     EXEC SQL WHENEVER SQLERROR GOTO sqlerr;
     OTCLIQUDIATE *otcliqudiate = NULL;
-    /*»ñÈ¡×ªÈÃ½»ÊÕÌìÊý*/
+    /*ï¿½ï¿½È¡×ªï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
     if((otcliqudiate = GetOTCLiqudiate(t->fundcode[k],t->sharetype[k],t->commissiontype[k],t->outbusinflag[k])) == NULL)
     {
         settlementdays = 0;
@@ -1001,30 +990,30 @@ int LiqudiateOTCTransfer(TRANSFERCOMMISSIONCFM *t,int k)
     {
         settlementdays = otcliqudiate->settlementdays;
     }
-    /*¼ÆËãÇåËã±¾½ð£¬Èç¹ûÊÇ×ªÈÃ³öÒµÎñ£¬ÔòÇåËã±¾½ð=³É½»¼Û¸ñX³É½»ÊýÁ¿
-      Èç¹ûÊÇ×ªÈÃÈëÒµÎñ£¬ÔòÇåËã±¾½ð=-1X³É½»¼Û¸ñX³É½»ÊýÁ¿*/
-    /*¼ÆËãÊÕ¸¶¾»¶î£¬Èç¹ûÊÇ×ªÈÃ³öÒµÎñ£¬ÔòÊÕ¸¶¾»¶î=³É½»¼Û¸ñX³É½»ÊýÁ¿-¾­ÊÖ·Ñ-Ó¡»¨Ë°µÈËùÓÐ¼ÆËã³öÀ´µÄ·ÑÓÃ
-      Èç¹ûÊÇ×ªÈÃÈëÒµÎñ£¬ÔòÊÕ¸¶¾»¶î=-1 X£¨³É½»¼Û¸ñX³É½»ÊýÁ¿+¾­ÊÖ·Ñ+Ó¡»¨Ë°µÈËùÓÐ¼ÆËã³öÀ´µÄ·ÑÓÃ£©*/
-    if(strcmp(t->outbusinflag[k],"20S") == 0)/*×ª»»³ö*/
+    /*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ã±¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½Ã³ï¿½Òµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ã±¾ï¿½ï¿½=ï¿½É½ï¿½ï¿½Û¸ï¿½Xï¿½É½ï¿½ï¿½ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½Òµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ã±¾ï¿½ï¿½=-1Xï¿½É½ï¿½ï¿½Û¸ï¿½Xï¿½É½ï¿½ï¿½ï¿½ï¿½ï¿½*/
+    /*ï¿½ï¿½ï¿½ï¿½ï¿½Õ¸ï¿½ï¿½ï¿½ï¿½î£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½Ã³ï¿½Òµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¸ï¿½ï¿½ï¿½ï¿½ï¿½=ï¿½É½ï¿½ï¿½Û¸ï¿½Xï¿½É½ï¿½ï¿½ï¿½ï¿½ï¿½-ï¿½ï¿½ï¿½Ö·ï¿½-Ó¡ï¿½ï¿½Ë°ï¿½ï¿½ï¿½ï¿½ï¿½Ð¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä·ï¿½ï¿½ï¿½
+      ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½Òµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¸ï¿½ï¿½ï¿½ï¿½ï¿½=-1 Xï¿½ï¿½ï¿½É½ï¿½ï¿½Û¸ï¿½Xï¿½É½ï¿½ï¿½ï¿½ï¿½ï¿½+ï¿½ï¿½ï¿½Ö·ï¿½+Ó¡ï¿½ï¿½Ë°ï¿½ï¿½ï¿½ï¿½ï¿½Ð¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä·ï¿½ï¿½Ã£ï¿½*/
+    if(strcmp(t->outbusinflag[k],"20S") == 0)/*×ªï¿½ï¿½ï¿½ï¿½*/
     {
-        t->liqudiatebalance[k] = t->confirmbalance[k];/*ÇåËã±¾½ð*/
-        t->netbalance[k] = t->confirmbalance[k] - t->fare[k];/*ÊÕ¸¶¾»¶î*/
+        t->liqudiatebalance[k] = t->confirmbalance[k];/*ï¿½ï¿½ï¿½ã±¾ï¿½ï¿½*/
+        t->netbalance[k] = t->confirmbalance[k] - t->fare[k];/*ï¿½Õ¸ï¿½ï¿½ï¿½ï¿½ï¿½*/
     }
     if(strcmp(t->outbusinflag[k],"20B") == 0)
     {
-        t->liqudiatebalance[k] = -1 * t->confirmbalance[k];/*ÇåËã±¾½ð*/
-        t->netbalance[k] = -1 * (t->confirmbalance[k] + t->fare[k]);/*ÊÕ¸¶¾»¶î*/
+        t->liqudiatebalance[k] = -1 * t->confirmbalance[k];/*ï¿½ï¿½ï¿½ã±¾ï¿½ï¿½*/
+        t->netbalance[k] = -1 * (t->confirmbalance[k] + t->fare[k]);/*ï¿½Õ¸ï¿½ï¿½ï¿½ï¿½ï¿½*/
     }
-    /*¼ÆËã½»ÊÕÈÕÆÚ£¬½»ÊÕÈÕÆÚ=³É½»ÈÕÆÚ+½»ÊÕÌìÊý¸ö¹¤×÷ÈÕ*/
+    /*ï¿½ï¿½ï¿½ã½»ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½=ï¿½É½ï¿½ï¿½ï¿½ï¿½ï¿½+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
     EXEC SQL SELECT GetRealDays(:t->fundcode[k],:t->agencyno[k],:t->requestdate[k],:settlementdays) into :t->settlementdate[k] from dual;
     WriteLog(0, "[%s:%d, t->settlementdate[k]=%s]\n", __FILE__, __LINE__, t->settlementdate[k]);
     if (strcmp(t->settlementdate[k],"")==0)
     {
         strcpy(t->settlementdate[k], t->requestdate[k]);  
     }
-    /*ÇåËãÈÕÆÚ£¬µ±Ç°ÏµÍ³ÉêÇëÈÕÆÚ*/
+    /*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½Ç°ÏµÍ³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
     strcpy(t->liqudiatedate[k], GRequestDate); 
-    /*»ñÈ¡ÇåËãÁ÷Ë®ºÅ*/
+    /*ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë®ï¿½ï¿½*/
     EXEC SQL SELECT (lpad(sqn_confirm.nextval,12,'0')) INTO :t->liqudiateserialno[k] FROM DUAL;
 
 
@@ -1036,13 +1025,13 @@ sqlerr:
 
 
 /*====================================================================================
-  º¯ÊýÃû³Æ£ºMdTransferCommission
-  º¯Êý¹¦ÄÜ:¸ù¾ÝÉêÇë±íµÄrowidÐÞ¸ÄÉêÇë±í
-  ÊäÈë²ÎÊý:
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½MdTransferCommission
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½rowidï¿½Þ¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:
   ...
-  Êä³ö²ÎÊý:ÎÞ 
-  ·µ »Ø Öµ:0:ÕýÈ·£»ÆäËû:Ê§°Ü
-  ×÷        Õß:   tianzx
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½ 
+  ï¿½ï¿½ ï¿½ï¿½ Öµ:0:ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:Ê§ï¿½ï¿½
+  ï¿½ï¿½        ï¿½ï¿½:   tianzx
   =====================================================================================*/
 int MdTransferCommission(TRANSFERCOMMISSION* t,char sRowId[][RID + 1],int nRow)
 {
@@ -1053,11 +1042,11 @@ int MdTransferCommission(TRANSFERCOMMISSION* t,char sRowId[][RID + 1],int nRow)
        WriteLog(0,"status[%s],cause[%s],cdate[%s],fundcode[%s],sharetype[%s],rid[%s]\n",t->status[nIdx],
        t->cause[nIdx],t->cdate[nIdx],t->fundcode[nIdx],t->sharetype[nIdx],sRowId[nIdx]);
        */  
-    WriteLog(0, "[ÎÄ¼þÃû=%s, ÐÐÊý=%d, %s]\n", __FILE__, __LINE__, "ÐÞ¸ÄÉêÇëÊý¾Ý¿ªÊ¼......");
+    WriteLog(0, "[ï¿½Ä¼ï¿½ï¿½ï¿½=%s, ï¿½ï¿½ï¿½ï¿½=%d, %s]\n", __FILE__, __LINE__, "ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½Ê¼......");
     EXEC SQL WHENEVER SQLERROR GOTO SQLERR;
     if(nRow > 0)
     {
-        /*ÏÈ¸üÐÂ×ª³öµÄÉêÇë£¬ÔÙ¸ù¾Ý×ª³öÀ´È·ÈÏ×ªÈë*/
+        /*ï¿½È¸ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ë£¬ï¿½Ù¸ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½È·ï¿½ï¿½×ªï¿½ï¿½*/
         EXEC SQL FOR :nRow UPDATE TTransferCommission  SET 
             C_STATUS = :t->status,
                      C_CAUSE = :t->cause,
@@ -1068,7 +1057,7 @@ int MdTransferCommission(TRANSFERCOMMISSION* t,char sRowId[][RID + 1],int nRow)
                          and TRIM(:t->status)!='0';
 
     }
-    WriteLog(0, "[ÎÄ¼þÃû=%s, ÐÐÊý=%d, %s]\n", __FILE__, __LINE__, "ÐÞ¸ÄÉêÇëÊý¾Ý½áÊø......");
+    WriteLog(0, "[ï¿½Ä¼ï¿½ï¿½ï¿½=%s, ï¿½ï¿½ï¿½ï¿½=%d, %s]\n", __FILE__, __LINE__, "ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý½ï¿½ï¿½ï¿½......");
     return 0;
 SQLERR:
     BatchError(7001,"");
@@ -1076,13 +1065,13 @@ SQLERR:
 }
 
 /*====================================================================================
-  º¯ÊýÃû³Æ£ºTrimTTransferCommission
-  º¯Êý¹¦ÄÜ:   TRIM TrimTTransferCommissionµÄ×Ö¶Î
-  ÊäÈë²ÎÊý:
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½TrimTTransferCommission
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:   TRIM TrimTTransferCommissionï¿½ï¿½ï¿½Ö¶ï¿½
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:
   ...
-  Êä³ö²ÎÊý:ÎÞ 
-  ·µ »Ø Öµ:0:ÕýÈ·£»ÆäËû:Ê§°Ü
-  ×÷        Õß:   tianzx
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½ 
+  ï¿½ï¿½ ï¿½ï¿½ Öµ:0:ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:Ê§ï¿½ï¿½
+  ï¿½ï¿½        ï¿½ï¿½:   tianzx
   =====================================================================================*/
 int TrimTTransferCommission(TRANSFERCOMMISSION* transfercommission,int nRow)
 {
@@ -1118,12 +1107,12 @@ int TrimTTransferCommission(TRANSFERCOMMISSION* transfercommission,int nRow)
 }
 
 /*====================================================================================
-  º¯ÊýÃû³Æ£ºTTransferCommissionCfmDeal
-  º¯Êý¹¦ÄÜ:   OTC×ª»»È·ÈÏ´¦Àí
-  ÊäÈë²ÎÊý:   ÎÞ
-  Êä³ö²ÎÊý£ºÎÞ
-  ·µ  »Ø  Öµ:   0:ÕýÈ·£»ÆäËû:Ê§°Ü
-  ×÷        Õß:   tianzx
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½TTransferCommissionCfmDeal
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:   OTC×ªï¿½ï¿½È·ï¿½Ï´ï¿½ï¿½ï¿½
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:   ï¿½ï¿½
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+  ï¿½ï¿½  ï¿½ï¿½  Öµ:   0:ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:Ê§ï¿½ï¿½
+  ï¿½ï¿½        ï¿½ï¿½:   tianzx
   =====================================================================================*/
 int TTransferCommissionCfmDeal()
 {
@@ -1132,7 +1121,7 @@ int TTransferCommissionCfmDeal()
     int  iDealRows = 0;
     int  k = 0;
     int nRt = 0;
-    int iDtlRows    = 0;          /* ·Ý¶îÃ÷Ï¸ÌõÊý */
+    int iDtlRows    = 0;          /* ï¿½Ý¶ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ï¿½ */
     int nRowCfmDtl = 0;
     double fDiffFare=0.0; 
     double fCfmBlc=0.0;
@@ -1142,24 +1131,24 @@ int TTransferCommissionCfmDeal()
     char sBnsType[ANUM][2];
     double nohavet0_share = 0.0;
     double have_useableshare = 0.0;
-    double  have_share=0.0;         /*¸öÈËÔ­ÓÐµÄ·Ý¶î(°´Íøµã)*/
-    double  freeze_share=0.0;       /*¶³½á·Ý¶î*/
+    double  have_share=0.0;         /*ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ÐµÄ·Ý¶ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)*/
+    double  freeze_share=0.0;       /*ï¿½ï¿½ï¿½ï¿½ï¿½Ý¶ï¿½*/
     TFUNDINFO       *fundinfo=NULL;
-    TFARE_RST tFareRst;             /*·ÑÓÃÐÅÏ¢*/   
-    TCFM_BTH tCfmBth;               /*È·ÈÏÊý¾ÝÊý×é*/   
-    TCFM_DTL_BTH tCfmDtlBth;        /*È·ÈÏÃ÷Ï¸Êý¾ÝÊý×é*/
-    TSTC_SHR_BTH tStcShrBth;        /*·Ý¶îÊý¾ÝÊý×é*/ 
-    TREQUEST_S tRqtHd;              /*·Ç½»Ò×¹ý»§*/   
+    TFARE_RST tFareRst;             /*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢*/   
+    TCFM_BTH tCfmBth;               /*È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/   
+    TCFM_DTL_BTH tCfmDtlBth;        /*È·ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
+    TSTC_SHR_BTH tStcShrBth;        /*ï¿½Ý¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/ 
+    TREQUEST_S tRqtHd;              /*ï¿½Ç½ï¿½ï¿½×¹ï¿½ï¿½ï¿½*/   
     TRANSFERCOMMISSION transfer;
     TRANSFERCOMMISSIONCFM transfercfm;
-    TSHR_DTL_BTH tShrDtlBth;        /*·Ý¶îÃ÷Ï¸Êý¾ÝÊý×é*/                                              
-    TSHR_CRT_BTH tShrCrtBth;        /*·Ý¶î±ä»¯Á÷Ë®Êý×é*/ 
-    TRQT_RDM tRqt;                  /*Êê»ØµÈ½»Ò×µÄ»ù½ðÕÊºÅµÈÌõ¼þÊý¾Ý ÓÃÓÚÊê»ØµÈµÄÃ÷Ï¸´¦Àí*/
+    TSHR_DTL_BTH tShrDtlBth;        /*ï¿½Ý¶ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/                                              
+    TSHR_CRT_BTH tShrCrtBth;        /*ï¿½Ý¶ï¿½ï¿½ä»¯ï¿½ï¿½Ë®ï¿½ï¿½ï¿½ï¿½*/ 
+    TRQT_RDM tRqt;                  /*ï¿½ï¿½ï¿½ØµÈ½ï¿½ï¿½×µÄ»ï¿½ï¿½ï¿½ï¿½ÊºÅµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ØµÈµï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ï¿½*/
 
     EXEC SQL WHENEVER SQLERROR GOTO sqlerr;
-    WriteLog(0,"OTC×ª»»È·ÈÏ´¦Àí¿ªÊ¼......\n");
+    WriteLog(0,"OTC×ªï¿½ï¿½È·ï¿½Ï´ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼......\n");
     ftime(&time);
-    //È¡³öTTransferCommissionÖÐc_status=0,d_cdate=µ±Ç°ÏµÍ³È·ÈÏÈÕÆÚµÄÊý¾Ý
+    //È¡ï¿½ï¿½TTransferCommissionï¿½ï¿½c_status=0,d_cdate=ï¿½ï¿½Ç°ÏµÍ³È·ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½
     EXEC SQL DECLARE Cur_OTC CURSOR FOR
         SELECT C_CommissionID, C_requestno, C_OuterFundCode, C_IssueCode, C_FundNo,C_agencyno, C_TACode, 
                C_fundacco, C_tradeacco, C_commissiontype, C_outbusinflag, F_TradePrice,F_Shares, D_requestdate, 
@@ -1171,7 +1160,7 @@ int TTransferCommissionCfmDeal()
                    ORDER BY C_REQUESTNO;          
 
     EXEC SQL OPEN Cur_OTC;
-    WriteLog(0,"  Opened. %.3lf Ãë\n",DiffTime(time));
+    WriteLog(0,"  Opened. %.3lf ï¿½ï¿½\n",DiffTime(time));
     iRows=ANUM;
     iDealRows=0;
     while(iRows==ANUM)
@@ -1190,25 +1179,25 @@ int TTransferCommissionCfmDeal()
         EXEC SQL FETCH Cur_OTC INTO :transfer,:RowId;
         iRows = sqlca.sqlerrd[2] - iDealRows;
         iDealRows = sqlca.sqlerrd[2];
-        WriteLog(0,"Fetched nRow=%d %.3lf Ãë\n",iRows,DiffTime(time));
+        WriteLog(0,"Fetched nRow=%d %.3lf ï¿½ï¿½\n",iRows,DiffTime(time));
         if (iRows==0)
             break;
-        /*¶ÔFETCH ³öµÄÊý¾ÝTRIM µô¿Õ¸ñ*/
+        /*ï¿½ï¿½FETCH ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½TRIM ï¿½ï¿½ï¿½Õ¸ï¿½*/
         TrimTTransferCommission(&transfer,iRows);
-        /*¶ÔÈ·ÈÏÊý×éµÄÒ»Ð©»ù±¾ÐÅÏ¢¸³Öµ*/  
+        /*ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»Ð©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½Öµ*/  
         if((nRt = FillTransferCommissionCfm(&transfercfm,&transfer,iRows)) != 0)
         {
-            WriteLog(0, "[ÎÄ¼þÃû=%s, ÐÐÊý=%d, %]\n", __FILE__, __LINE__, "È·ÈÏÊý×éµÄ»ù±¾ÐÅÏ¢¸³ÖµÊ§°Ü......");
+            WriteLog(0, "[ï¿½Ä¼ï¿½ï¿½ï¿½=%s, ï¿½ï¿½ï¿½ï¿½=%d, %]\n", __FILE__, __LINE__, "È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä»ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ÖµÊ§ï¿½ï¿½......");
         }    
         for (k=0;k<iRows;k++)
         {
             strcpy(tStcShrBth.lastmodify[k],GConfirmDate); 
-            /*step 1:OTCÄÚÍâ²¿ÒµÎñ´úÂë×ª»»*/
+            /*step 1:OTCï¿½ï¿½ï¿½â²¿Òµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½*/
             if((nRt = BusinCodeChange(transfercfm.outerfundcode[k],transfercfm.fundcode[k],transfercfm.sharetype[k])) != 0)
             {
-                WriteLog(0, "[ÎÄ¼þÃû=%s, ÐÐÊý=%d, %s]\n", __FILE__, __LINE__, "×ª»»ÄÚÍâ²¿ÒµÎñ´úÂë³ö´í......");
+                WriteLog(0, "[ï¿½Ä¼ï¿½ï¿½ï¿½=%s, ï¿½ï¿½ï¿½ï¿½=%d, %s]\n", __FILE__, __LINE__, "×ªï¿½ï¿½ï¿½ï¿½ï¿½â²¿Òµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½......");
             }
-            /*ÉêÇëÊý¾Ý½á¹¹Ìå¸³Öµ*/
+            /*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý½á¹¹ï¿½å¸³Öµ*/
             strcpy(transfer.fundcode[k],transfercfm.fundcode[k]);
             strcpy(transfer.sharetype[k],transfercfm.sharetype[k]);
             strcpy(transfer.cdate[k],GConfirmDate);
@@ -1216,7 +1205,7 @@ int TTransferCommissionCfmDeal()
             {
                 strcpy(transfer.requestdate[k],GRequestDate);
             }    
-            /*Êê»ØÃ÷Ï¸½á¹¹Ìå¸³Öµ*/
+            /*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½á¹¹ï¿½å¸³Öµ*/
             memset(&tRqt,0,sizeof(tRqt));
             strcpy(tRqt.tRqtS.fundacco,transfercfm.fundacco[k]);
             strcpy(tRqt.tRqtS.tradeacco,transfercfm.tradeacco[k]);
@@ -1228,13 +1217,13 @@ int TTransferCommissionCfmDeal()
             strcpy(tRqt.originalno,Trim(transfer.originalno[k]));
             strcpy(tRqt.tRqtS.businflag,"12");
             tRqt.shares = transfercfm.shares[k];
-            /*¶ÔÈ·ÈÏÎ¯ÍÐÊý¾Ý½á¹¹Ìå¸³Öµ*/
+            /*ï¿½ï¿½È·ï¿½ï¿½Î¯ï¿½ï¿½ï¿½ï¿½ï¿½Ý½á¹¹ï¿½å¸³Öµ*/
             transfercfm.shares[k] = transfer.shares[k];
             strcpy(transfercfm.senddate[k],GRequestDate);
             strcpy(transfercfm.cdate[k],GConfirmDate);
             strcpy(transfercfm.liqudiatedate[k],GRequestDate);
             strcpy(transfercfm.settlementdate[k],transfer.requestdate[k]);
-            /*¶ÔÈ·ÈÏ³ö½á¹¹Ìå¸³Öµ£¬ÒÔ±ãÖ®ºó²åÃ÷Ï¸ºÍÁ÷Ë®*/
+            /*ï¿½ï¿½È·ï¿½Ï³ï¿½ï¿½á¹¹ï¿½å¸³Öµï¿½ï¿½ï¿½Ô±ï¿½Ö®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ï¿½Ë®*/
             tCfmBth.confirmshares[k] = transfer.shares[k];
             strcpy(tCfmBth.fundcode[k],transfercfm.fundcode[k]);
             strcpy(tCfmBth.tradeacco[k],transfercfm.tradeacco[k]);
@@ -1249,10 +1238,10 @@ int TTransferCommissionCfmDeal()
             strcpy(tCfmBth.requestno[k],transfercfm.requestno[k]);
             tCfmBth.orgidx[k] = transfercfm.orgidx[k];
             strcpy(tCfmBth.businflag[k],"14");
-            strcpy(tCfmBth.outbusinflag[k],"033");/*ÏÈÐ´³É·Ç½»Ò×¹ý»§³ö*/
-            if(strcmp(transfercfm.outbusinflag[k],"20S") == 0)/*×ª³ö*/
+            strcpy(tCfmBth.outbusinflag[k],"033");/*ï¿½ï¿½Ð´ï¿½É·Ç½ï¿½ï¿½×¹ï¿½ï¿½ï¿½ï¿½ï¿½*/
+            if(strcmp(transfercfm.outbusinflag[k],"20S") == 0)/*×ªï¿½ï¿½*/
             {
-                /*step 2:ÅÐ¶Ï¿ÉÓÃ·Ý¶î*/
+                /*step 2:ï¿½Ð¶Ï¿ï¿½ï¿½Ã·Ý¶ï¿½*/
                 GetShareNew(transfer.fundacco[k],transfer.tradeacco[k],transfer.fundcode[k],transfer.sharetype[k],
                         transfer.agencyno[k],transfer.agencyno[k],&nohavet0_share,&freeze_share,&have_share,sStcRId[k]);
                 EXEC SQL SAVEPOINT SVP_UNTRD_TRF;
@@ -1260,7 +1249,7 @@ int TTransferCommissionCfmDeal()
                 if(FBG(transfer.shares[k],have_useableshare))
                 {
                     strcpy(transfer.status[k],"2");
-                    sprintf(transfer.cause[k],"7675³¬¹ý¿ÉÓÃµÄ%s·Ý¶îÊý",GRepName);
+                    sprintf(transfer.cause[k],"7675ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ãµï¿½%sï¿½Ý¶ï¿½ï¿½ï¿½",GRepName);
                     strcpy(transfercfm.status[k],transfer.status[k]);
                     strcpy(transfercfm.cause[k],transfer.cause[k]);
                     strcpy(tCfmBth.status[k],transfercfm.status[k]);
@@ -1268,7 +1257,7 @@ int TTransferCommissionCfmDeal()
                     transfercfm.confirmbalance[k] = 0;
                 }
 
-                /*step 3:·Ý¶îÊê»Ø£¬´¦ÀíÃ÷Ï¸*/
+                /*step 3:ï¿½Ý¶ï¿½ï¿½ï¿½ï¿½Ø£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸*/
                 nRt = ShrRdc(&tRqt,transfer.tradeprice[k],&fDiffFare,&tFareRst,&fCfmBlc,&iDtlRows,&(tCfmBth.confirmincome[k]),&(tCfmBth.interest[k]),&(tCfmBth.interesttax[k]),&(tCfmBth.protectshare[k]));
                 if((nRt != 0)&&(nRt != ERR_NOSHR)&&(nRt != ERR_PMS))
                 {
@@ -1281,7 +1270,7 @@ int TTransferCommissionCfmDeal()
                 {
                     EXEC SQL ROLLBACK TO SVP_UNTRD_TRF;
                     strcpy(transfer.status[k],"2");
-                    sprintf(transfer.cause[k],"7675³¬¹ý¿ÉÓÃµÄ%s·Ý¶îÊý",GRepName);
+                    sprintf(transfer.cause[k],"7675ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ãµï¿½%sï¿½Ý¶ï¿½ï¿½ï¿½",GRepName);
                     strcpy(transfercfm.status[k],transfer.status[k]);
                     strcpy(transfercfm.cause[k],transfer.cause[k]);
                     strcpy(tCfmBth.status[k],transfercfm.status[k]);
@@ -1291,17 +1280,17 @@ int TTransferCommissionCfmDeal()
                 }
                 WriteLog(0,"ShrRdc() OK.\n");
 
-                //step4:µ÷ÓÃCltTransferCommissionFeeº¯Êý£¬¼ÆËã×ªÈÃ·ÑÓÃ
+                //step4:ï¿½ï¿½ï¿½ï¿½CltTransferCommissionFeeï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½Ã·ï¿½ï¿½ï¿½
                 if((nRt = CltTransferCommissionFee(&transfercfm, k, iDtlRows)) !=0)
                 {
-                    WriteLog(0, "[ÎÄ¼þÃû=%s, ÐÐÊý=%d, %s]\n", __FILE__, __LINE__, "OTC¼ÆËã×ªÈÃÏà¹Ø·ÑÓÃ³ö´í......");
+                    WriteLog(0, "[ï¿½Ä¼ï¿½ï¿½ï¿½=%s, ï¿½ï¿½ï¿½ï¿½=%d, %s]\n", __FILE__, __LINE__, "OTCï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½Ø·ï¿½ï¿½Ã³ï¿½ï¿½ï¿½......");
                 }                
-                //strp5:µ÷ÓÃLiqudiateTransferCommissionº¯Êý£¬¼ÆËãÇåËãÏà¹ØÐÅÏ¢
+                //strp5:ï¿½ï¿½ï¿½ï¿½LiqudiateTransferCommissionï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
                 if((nRt = LiqudiateOTCTransfer(&transfercfm, k)) != 0)
                 {
-                    WriteLog(0, "[ÎÄ¼þÃû=%s, ÐÐÊý=%d, %s]\n", __FILE__, __LINE__, "OTC¼ÆËã×ªÈÃÇåËãÏà¹ØÐÅÏ¢³ö´í......");
+                    WriteLog(0, "[ï¿½Ä¼ï¿½ï¿½ï¿½=%s, ï¿½ï¿½ï¿½ï¿½=%d, %s]\n", __FILE__, __LINE__, "OTCï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½......");
                 }
-                /*È·ÈÏ½ð¶î*/
+                /*È·ï¿½Ï½ï¿½ï¿½ï¿½*/
                 transfercfm.confirmbalance[k] -= transfercfm.fare[k] ;
 
                 strcpy(tRqtHd.fundacco,transfer.otheracco[k]);
@@ -1312,53 +1301,53 @@ int TTransferCommissionCfmDeal()
                 strcpy(tRqtHd.netno,transfer.otheragency[k]);
                 strcpy(tRqtHd.businflag,"15");    
 
-                /*¶Ô·Ý¶îÃ÷Ï¸ºÍÈ·ÈÏÃ÷Ï¸£¨Èë£©Êý×é¸¶Öµ*/
+                /*ï¿½Ô·Ý¶ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ë£©ï¿½ï¿½ï¿½é¸¶Öµ*/
                 if((nRt = OTCFillDtlIn(&tShrDtlBth,&nRowShrDtl,&tCfmDtlBth,&nRowCfmDtl,&tRqtHd,tCfmBth.date[k],
                                 tCfmBth.serialno[k],tCfmBth.incserialno[k],tCfmBth.confirmshares[k],transfer.tradeprice[k],iDtlRows)) != 0)
                     return nRt;  
-                WriteLog(0, "[ÎÄ¼þÃû=%s, ÐÐÊý=%d, nRowShrDtl=%d]\n", __FILE__, __LINE__, nRowShrDtl);    
+                WriteLog(0, "[ï¿½Ä¼ï¿½ï¿½ï¿½=%s, ï¿½ï¿½ï¿½ï¿½=%d, nRowShrDtl=%d]\n", __FILE__, __LINE__, nRowShrDtl);    
                 if((nRt = GetAgcCfmNo(transfer.otheragency[k],tCfmBth.incserialno[k])) == ERR_SET)
                     return nRt;  
                 strcpy(transfer.status[k],"1");
-                /*ÐÞ¸Ä¾²Ì¬·Ý¶î±í*/
+                /*ï¿½Þ¸Ä¾ï¿½Ì¬ï¿½Ý¶ï¿½ï¿½ï¿½*/
                 EXEC SQL UPDATE TSTATICSHARES SET 
                     F_REALSHARES = nvl(F_REALSHARES,0) - :tCfmBth.confirmshares[k],
                                  D_LASTMODIFY = to_date(:GConfirmDate,'yyyymmdd')            
                                      WHERE ROWID = :sStcRId[k];
-                WriteLog(0, "[ÎÄ¼þÃû=%s, ÐÐÊý=%d, %s]\n", __FILE__, __LINE__, "ÐÞ¸Ä¾²Ì¬·Ý¶î±í½áÊø.......");
+                WriteLog(0, "[ï¿½Ä¼ï¿½ï¿½ï¿½=%s, ï¿½ï¿½ï¿½ï¿½=%d, %s]\n", __FILE__, __LINE__, "ï¿½Þ¸Ä¾ï¿½Ì¬ï¿½Ý¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.......");
             }
-            else/*×ªÈë*/
+            else/*×ªï¿½ï¿½*/
             {
-                //step4:µ÷ÓÃCltTransferCommissionFeeº¯Êý£¬¼ÆËã×ªÈÃ·ÑÓÃ
+                //step4:ï¿½ï¿½ï¿½ï¿½CltTransferCommissionFeeï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½Ã·ï¿½ï¿½ï¿½
                 if((nRt = CltTransferCommissionFee(&transfercfm, k, 0)) !=0)
                 {
-                    WriteLog(0, "[ÎÄ¼þÃû=%s, ÐÐÊý=%d, %s]\n", __FILE__, __LINE__, "OTC¼ÆËã×ªÈÃÏà¹Ø·ÑÓÃ³ö´í......");
+                    WriteLog(0, "[ï¿½Ä¼ï¿½ï¿½ï¿½=%s, ï¿½ï¿½ï¿½ï¿½=%d, %s]\n", __FILE__, __LINE__, "OTCï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½Ø·ï¿½ï¿½Ã³ï¿½ï¿½ï¿½......");
                 }                
-                //strp5:µ÷ÓÃLiqudiateTransferCommissionº¯Êý£¬¼ÆËãÇåËãÏà¹ØÐÅÏ¢
+                //strp5:ï¿½ï¿½ï¿½ï¿½LiqudiateTransferCommissionï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
                 if((nRt = LiqudiateOTCTransfer(&transfercfm, k)) != 0)
                 {
-                    WriteLog(0, "[ÎÄ¼þÃû=%s, ÐÐÊý=%d, %s]\n", __FILE__, __LINE__, "OTC¼ÆËã×ªÈÃÇåËãÏà¹ØÐÅÏ¢³ö´í......");
+                    WriteLog(0, "[ï¿½Ä¼ï¿½ï¿½ï¿½=%s, ï¿½ï¿½ï¿½ï¿½=%d, %s]\n", __FILE__, __LINE__, "OTCï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½......");
                 }
                 strcpy(tCfmBth.outbusinflag[k],"20B");
-                /*È·ÈÏ½ð¶î*/
+                /*È·ï¿½Ï½ï¿½ï¿½ï¿½*/
                 transfercfm.confirmbalance[k] -= transfercfm.fare[k] ;
                 strcpy(transfer.status[k],"1");
             }            
         }
-        /*ÐÞ¸ÄÉêÇëÊý¾Ý*/
+        /*ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
         if((nRt = MdTransferCommission(&transfer,RowId,iRows)) == ERR_ORC)
         {
             EXEC SQL CLOSE Cur_OTC;
             return ERR_ORC;
         }        
-        /*Ôö¼ÓÈ·ÈÏ±í*/
+        /*ï¿½ï¿½ï¿½ï¿½È·ï¿½Ï±ï¿½*/
         if((nRt = AddTTransferCommissionCfm(&transfercfm,iRows)) == ERR_ORC)
         {
             EXEC SQL CLOSE Cur_OTC;
             return ERR_ORC;
         }
 
-        /*¹ýÂËµôÊ§°ÜµÄÊý¾Ý*/    
+        /*ï¿½ï¿½ï¿½Ëµï¿½Ê§ï¿½Üµï¿½ï¿½ï¿½ï¿½ï¿½*/    
         OTCDltFailData(&tCfmBth,sStcRId,NULL,NULL,
                 tShrCrtBth.lastshares,tShrCrtBth.lastfreezeshare,&iRows);
         if(iRows > 0){
@@ -1370,7 +1359,7 @@ int TTransferCommissionCfmDeal()
             }   
             FillOutCrtShr(&tCfmBth,&tShrCrtBth,&tStcShrBth,iRows);
             WriteLog(0,"MdfShr() [out] OK.\n"); 
-            /*¼ÇÁ÷Ë®*/      
+            /*ï¿½ï¿½ï¿½ï¿½Ë®*/      
             if((nRt = AddShrCrt(&tShrCrtBth,iRows)) == ERR_ORC)
             {
                 EXEC SQL CLOSE Cur_OTC;
@@ -1381,15 +1370,15 @@ int TTransferCommissionCfmDeal()
             for(k = 0;k < iRows;k++)
             {
                 if((fundinfo = GetFundInfo(tCfmBth.fundcode[k])) == NULL ){
-                    WriteLog(0,"Line:%d,%s\n",__LINE__,"ÎÞ»ù½ðÐÅÏ¢");
+                    WriteLog(0,"Line:%d,%s\n",__LINE__,"ï¿½Þ»ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢");
                     GErrorNo=0001;
-                    sprintf(GErrorMessage,"ÎÞ%sÐÅÏ¢",GRepName);
+                    sprintf(GErrorMessage,"ï¿½ï¿½%sï¿½ï¿½Ï¢",GRepName);
                     EXEC SQL CLOSE Cur_OTC;
                     return ERR_SET;
                 }
                 if((nRt = GetCstNo(transfercfm.otheracco[tCfmBth.orgidx[k]],tCfmBth.custno[k])) == ERR_ORC)
                     return nRt;
-                /*¶ÔÈë·½¸³Öµ*/   
+                /*ï¿½ï¿½ï¿½ë·½ï¿½ï¿½Öµ*/   
                 strcpy(tCfmBth.fundacco[k],transfercfm.otheracco[tCfmBth.orgidx[k]]);
                 strcpy(tCfmBth.businflag[k],"15");
                 strcpy(tCfmBth.cserialno[k],tCfmBth.incserialno[k]);
@@ -1409,16 +1398,16 @@ int TTransferCommissionCfmDeal()
 
             }       
 
-            /*¼ÇÁ÷Ë®£¨Èë£©*/
+            /*ï¿½ï¿½ï¿½ï¿½Ë®ï¿½ï¿½ï¿½ë£©*/
             if((nRt = AddCrtUArr(&tCfmBth,iRows) )== ERR_ORC)
             {
                 EXEC SQL CLOSE Cur_OTC;
                 return ERR_ORC;
             }
             WriteLog(0,"AddCrtUArr() OK.\n");
-            /*µ÷ÕûÈë·Ý¶î*/
+            /*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¶ï¿½*/
             AdjustInShrArr(&tCfmBth,sBnsType,&iRows);
-            /*ÐÞ¸Ä¾²Ì¬·Ý¶î±í£¨Èë£©*/
+            /*ï¿½Þ¸Ä¾ï¿½Ì¬ï¿½Ý¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ë£©*/
             if((nRt = MdfShrUArr(&tCfmBth,sBnsType,iRows)) == ERR_ORC)
             {
                 EXEC SQL CLOSE Cur_OTC;
@@ -1447,7 +1436,7 @@ int TTransferCommissionCfmDeal()
         EXEC SQL COMMIT WORK;
     }
 
-    WriteLog(0,"OTC×ª»»È·ÈÏ´¦Àí½áÊø£¬ºÄÊ± %.3lf Ãë\n",DiffTime(time));
+    WriteLog(0,"OTC×ªï¿½ï¿½È·ï¿½Ï´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê± %.3lf ï¿½ï¿½\n",DiffTime(time));
     return 0;
 sqlerr:
     EXEC SQL CLOSE Cur_OTC;
@@ -1456,14 +1445,14 @@ sqlerr:
 }
 
 /***************************************************************************
-  º¯ÊýÃû³Æ:sv_OTCShareInfo
-  º¯Êý¹¦ÄÜ:ºóÌ¨Éú³ÉÈ«Á¿ÕË»§ºÍÈ«Á¿·Ý¶îÐÅÏ¢
-  ÊäÈë²ÎÊý:
-  TPSVCINFO *rqst; ²»ÓÃ
-  Êä³ö²ÎÊý:TPSVCINFO *rqst;
-  ³É¹¦£º0;OK
-  Ê§°Ü£º1;´íÎóÔ­Òò
-  ·µ »Ø Öµ:ÎÞ
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:sv_OTCShareInfo
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½Ì¨ï¿½ï¿½ï¿½ï¿½È«ï¿½ï¿½ï¿½Ë»ï¿½ï¿½ï¿½È«ï¿½ï¿½ï¿½Ý¶ï¿½ï¿½ï¿½Ï¢
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:
+  TPSVCINFO *rqst; ï¿½ï¿½ï¿½ï¿½
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:TPSVCINFO *rqst;
+  ï¿½É¹ï¿½ï¿½ï¿½0;OK
+  Ê§ï¿½Ü£ï¿½1;ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½
+  ï¿½ï¿½ ï¿½ï¿½ Öµ:ï¿½ï¿½
  ***************************************************************************/
 int  sv_OTCShareInfo(TPSVCINFO *rqst)
 {
@@ -1472,21 +1461,21 @@ int  sv_OTCShareInfo(TPSVCINFO *rqst)
 
     sBuf = tpalloc("STRING",NULL,BUF_SIZE);
     if(sBuf == NULL) {
-        WriteLog(0,"·ÖÅäÄÚ´æ´íÎó£¡");
+        WriteLog(0,"ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
         return -1;
     }
 
     nil=CrtOTCCustInfo();
     if (nil !=0 )
     {
-        WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "µ÷ÓÃCrtOTCCustInfoº¯ÊýÉú³ÉÈ«Á¿ÕË»§³ö´í¡£" );
+        WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "ï¿½ï¿½ï¿½ï¿½CrtOTCCustInfoï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È«ï¿½ï¿½ï¿½Ë»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½" );
         return -1;
     }
 
     nil=CrtOTCShareInfo();
     if (nil !=0 )
     {
-        WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "µ÷ÓÃCrtOTCShareInfoº¯ÊýÈ«Á¿·Ý¶îÐÅÏ¢³ö´í¡£" );
+        WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "ï¿½ï¿½ï¿½ï¿½CrtOTCShareInfoï¿½ï¿½ï¿½ï¿½È«ï¿½ï¿½ï¿½Ý¶ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½" );
         return -1;
     }
 
@@ -1497,12 +1486,12 @@ int  sv_OTCShareInfo(TPSVCINFO *rqst)
 }
 
 /*====================================================================================
-  º¯ÊýÃû³Æ£ºOTCFillDtlIn
-  º¯Êý¹¦ÄÜ:¶Ô·Ý¶îÃ÷Ï¸¡¢È·ÈÏÃ÷Ï¸Êý×é£¨Èë£©¸¶Öµ
-  ÊäÈë²ÎÊý:
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½OTCFillDtlIn
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:ï¿½Ô·Ý¶ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½é£¨ï¿½ë£©ï¿½ï¿½Öµ
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:
   ...
-  Êä³ö²ÎÊý:ÎÞ 
-  ·µ »Ø Öµ:0:ÕýÈ·£»ÆäËû:Ê§°Ü
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½ 
+  ï¿½ï¿½ ï¿½ï¿½ Öµ:0:ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:Ê§ï¿½ï¿½
   =====================================================================================*/
 
 int OTCFillDtlIn(TSHR_DTL_BTH* tShrDtlBth,int* nShrDtlIdx,TCFM_DTL_BTH* tCfmDtlBth,int* nCfmDtlIdx,
@@ -1513,7 +1502,7 @@ int OTCFillDtlIn(TSHR_DTL_BTH* tShrDtlBth,int* nShrDtlIdx,TCFM_DTL_BTH* tCfmDtlB
     double fNAVIn=0.0,fOrgNAV=0.0;
     TFUNDINFO* tFndInfo=NULL;
     TFUNDINFO* tFndInfoout = NULL;
-    int samecycle = 0; /*¶ÌÆÚÀí²Æ×ª»»ÊÇ·ñÍ¬ÖÜÆÚ×ª»»*/
+    int samecycle = 0; /*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½Ç·ï¿½Í¬ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½*/
     double fShrTmp=0.0,fShrIn = 0.0,fShrTtl = 0.0;
     int iShrDtlFlag = 1;
 
@@ -1530,12 +1519,12 @@ int OTCFillDtlIn(TSHR_DTL_BTH* tShrDtlBth,int* nShrDtlIdx,TCFM_DTL_BTH* tCfmDtlB
     /*
        switch(nBsFlg)
        {
-       case 15://·Ç½»Ò×¹ý»§Èë
-       strcpy(sShrSrc,SRC_CHG_OWN);//·Ý¶îÀ´Ô´Îª£º·Ç½»Ò×¹ý»§
+       case 15://ï¿½Ç½ï¿½ï¿½×¹ï¿½ï¿½ï¿½ï¿½ï¿½
+       strcpy(sShrSrc,SRC_CHG_OWN);//ï¿½Ý¶ï¿½ï¿½ï¿½Ô´Îªï¿½ï¿½ï¿½Ç½ï¿½ï¿½×¹ï¿½ï¿½ï¿½
        if(((GSysParameter.FJYGHKeepDetail == 0)||
        ((strcmp(GSysParameter.ICBCFundacco,tRqtHd->fundacco)==0)&&
-       (GSysParameter.ICBCPawnDetail == 0))) //2011.04.21 hxx ±£±¾»ù½ð·Ç½»Ò×¹ý»§Èë²»ÄÜºÏ²¢Ã÷Ï¸
-       && (!(GSysParameter.ShortCycleFinance == 1 && tFndInfo->shortcyclefinance == 1))) //20120508 lingyz¿ªÍ¨³¬¶ÌÆÚÀí²Æ»ù½ð£¬ÇÒµ±Ç°»ù½ðÎª³¬¶ÌÆÚÀí²Æ»ù½ð±ØÐë±£ÁôÃ÷Ï¸
+       (GSysParameter.ICBCPawnDetail == 0))) //2011.04.21 hxx ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç½ï¿½ï¿½×¹ï¿½ï¿½ï¿½ï¿½ë²»ï¿½ÜºÏ²ï¿½ï¿½ï¿½Ï¸
+       && (!(GSysParameter.ShortCycleFinance == 1 && tFndInfo->shortcyclefinance == 1))) //20120508 lingyzï¿½ï¿½Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òµï¿½Ç°ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ë±£ï¿½ï¿½ï¿½ï¿½Ï¸
        nGather = TRUE;                 	 
        break;
        default:
@@ -1543,7 +1532,7 @@ int OTCFillDtlIn(TSHR_DTL_BTH* tShrDtlBth,int* nShrDtlIdx,TCFM_DTL_BTH* tCfmDtlB
        break;
        }
        */
-    if(nGather)/*²»±£ÁôÔ­À´Ã÷Ï¸£¬Ã÷Ï¸ºÏ²¢*/
+    if(nGather)/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½Ï²ï¿½*/
     {
         nDtlRow = 1;
         memset(&tFareCdt,0,sizeof(tFareCdt));
@@ -1571,7 +1560,7 @@ int OTCFillDtlIn(TSHR_DTL_BTH* tShrDtlBth,int* nShrDtlIdx,TCFM_DTL_BTH* tCfmDtlB
             memset(tShrDtlBth,0,sizeof(TSHR_DTL_BTH));
             nRowShrDtl = 0;
         }               
-        /*Èë·Ý¶îÃ÷Ï¸*/  
+        /*ï¿½ï¿½ï¿½Ý¶ï¿½ï¿½ï¿½Ï¸*/  
 
         if((nRt = GetAgcCfmNo(tRqtHd->agencyno,sTmp)) == ERR_SET)
             return nRt;
@@ -1586,7 +1575,7 @@ int OTCFillDtlIn(TSHR_DTL_BTH* tShrDtlBth,int* nShrDtlIdx,TCFM_DTL_BTH* tCfmDtlB
             strcpy(tShrDtlBth->fundcode[nRowShrDtl],tRqtHd->fundcode);
             strcpy(tShrDtlBth->sharetype[nRowShrDtl],tRqtHd->sharetype);            
             strcpy(tShrDtlBth->sourcetype[nRowShrDtl],gtShrDtlS->sSrcType);        
-            if(nGather)/*²»±£ÁôÔ­À´Ã÷Ï¸£¬Ã÷Ï¸ºÏ²¢*/
+            if(nGather)/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½Ï²ï¿½*/
             {            
                 strcpy(tShrDtlBth->registdate[nRowShrDtl],GConfirmDate);
                 tShrDtlBth->remainshares[nRowShrDtl] = fCfmNum;
@@ -1614,24 +1603,24 @@ int OTCFillDtlIn(TSHR_DTL_BTH* tShrDtlBth,int* nShrDtlIdx,TCFM_DTL_BTH* tCfmDtlB
                 tShrDtlBth->evennetvalue[nRowShrDtl] = 1.0;
                 tShrDtlBth->backfare[nRowShrDtl] = 0;
                 strcpy(tShrDtlBth->protectflag[nRowShrDtl],"");
-                tShrDtlBth->totalbonus[nRowShrDtl] = 0;/*2011.04.21 hxx ÀúÊ·²ÉÓÃÄ¬ÈÏÖµ0,ÕâÀïÏÔÊ¾µØ¸øÀÛ¼Æ·Öºì¸³Öµ*/
-                tShrDtlBth->costfare[nRowShrDtl] = 0;/*2011.04.21 hxx ¶Ô±£±¾»ù½ðÖ»ÓÐ×ª»»²ÅÄÜºÏ²¢Ã÷Ï¸,¶øcostfare¶Ô×ª»»Ã»ÓÐÒâÒå,ËùÒÔÌî0*/
+                tShrDtlBth->totalbonus[nRowShrDtl] = 0;/*2011.04.21 hxx ï¿½ï¿½Ê·ï¿½ï¿½ï¿½ï¿½Ä¬ï¿½ï¿½Öµ0,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½Ø¸ï¿½ï¿½Û¼Æ·Öºì¸³Öµ*/
+                tShrDtlBth->costfare[nRowShrDtl] = 0;/*2011.04.21 hxx ï¿½Ô±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ÜºÏ²ï¿½ï¿½ï¿½Ï¸,ï¿½ï¿½costfareï¿½ï¿½×ªï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0*/
             }
             else
             {       
-                if (nNewRegDate)    /*ÖØÐÂ¼ÆËã·Ý¶î×¢²áÈÕÆÚ*/
+                if (nNewRegDate)    /*ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½Ý¶ï¿½×¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
                     strcpy(tShrDtlBth->registdate[nRowShrDtl],GConfirmDate);
                 else    
                     strcpy(tShrDtlBth->registdate[nRowShrDtl],gtShrDtlS->sRegDt);
 
                 tShrDtlBth->remainshares[nRowShrDtl] = gtShrDtlS->fCfmShr;
-                /*×ªÍÐ¹Ü¡¢·Ç½»Ò×¹ý»§£º±£ÁôÀûÏ¢×ª·Ý¶îºÍ×ª»»²¹²î·Ñ 20090219 xuhu*/
+                /*×ªï¿½Ð¹Ü¡ï¿½ï¿½Ç½ï¿½ï¿½×¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢×ªï¿½Ý¶ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 20090219 xuhu*/
                 tShrDtlBth->interestshare[nRowShrDtl] = gtShrDtlS->interestshare;
                 tShrDtlBth->backfare[nRowShrDtl] = gtShrDtlS->backfare;
-                tShrDtlBth->costfare[nRowShrDtl] = gtShrDtlS->fCostFare;/*2011.04.21 hxx ´ø×ßcostfare*/
-                /*×ªÍÐ¹Ü¼°·Ç½»Ò×¹ý»§½«³ö·Ý¶îÃ÷Ï¸µÄÉÏ´ÎÒµ¼¨Ìá³ÉÈÕÆÚ´ø×ß*/
+                tShrDtlBth->costfare[nRowShrDtl] = gtShrDtlS->fCostFare;/*2011.04.21 hxx ï¿½ï¿½ï¿½ï¿½costfare*/
+                /*×ªï¿½Ð¹Ü¼ï¿½ï¿½Ç½ï¿½ï¿½×¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¶ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½Ï´ï¿½Òµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½*/
                 strcpy(tShrDtlBth->lastdeductdate[nRowShrDtl],gtShrDtlS->lastdeductdate);
-                /*20120508 lingyz³¬¶ÌÆÚ»ù½ð·Ç½»Ò×¹ý»§ºÍ×ªÍÐ¹ÜÒµÎñ°Ñ·Ý¶îÍË³öµÄÊÕÒæ¸³Öµµ½Èë·½µÄ·Ý¶îÃ÷Ï¸µÄÊÕÒæÖÐ*/
+                /*20120508 lingyzï¿½ï¿½ï¿½ï¿½ï¿½Ú»ï¿½ï¿½ï¿½ï¿½Ç½ï¿½ï¿½×¹ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½Ð¹ï¿½Òµï¿½ï¿½ï¿½Ñ·Ý¶ï¿½ï¿½Ë³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æ¸³Öµï¿½ï¿½ï¿½ë·½ï¿½Ä·Ý¶ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
                 tShrDtlBth->income[nRowShrDtl] = gtShrDtlS->income;
 
                 tShrDtlBth->oribalance[nRowShrDtl] = gtShrDtlS->fOrgBlc;
@@ -1670,7 +1659,7 @@ int OTCFillDtlIn(TSHR_DTL_BTH* tShrDtlBth,int* nShrDtlIdx,TCFM_DTL_BTH* tCfmDtlB
             strcpy(tShrDtlBth->oriagency[nRowShrDtl],gtShrDtlS->sOrgAgc);
             tShrDtlBth->apportionratio[nRowShrDtl] = gtShrDtlS->apportionratio;
         }
-        /*ÈëÈ·ÈÏÃ÷Ï¸*/
+        /*ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½Ï¸*/
         strcpy(tCfmDtlBth->businflag[nRowCfmDtl],tRqtHd->businflag);
         strcpy(tCfmDtlBth->cdate[nRowCfmDtl],GConfirmDate);
         strcpy(tCfmDtlBth->cserialnototal[nRowCfmDtl],sCfmNo);
@@ -1682,7 +1671,7 @@ int OTCFillDtlIn(TSHR_DTL_BTH* tShrDtlBth,int* nShrDtlIdx,TCFM_DTL_BTH* tCfmDtlB
         strcpy(tCfmDtlBth->date[nRowCfmDtl],sRqtDt);
         tCfmDtlBth->serialno[nRowCfmDtl] = nRqtNo;                          
         strcpy(tCfmDtlBth->cserialno[nRowCfmDtl],sTmp);
-        /*20120524 lingyz³¬¶ÌÆÚ·Ç½»Ò×¹ý»§ºÍ×ªÍÐ¹ÜÒµÎñ°Ñ·Ý¶îÍË³öµÄÊÕÒæ¸³Öµµ½Èë·½µÄÈ·ÈÏÃ÷Ï¸µÄÊÕÒæÖÐ*/
+        /*20120524 lingyzï¿½ï¿½ï¿½ï¿½ï¿½Ú·Ç½ï¿½ï¿½×¹ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½Ð¹ï¿½Òµï¿½ï¿½ï¿½Ñ·Ý¶ï¿½ï¿½Ë³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æ¸³Öµï¿½ï¿½ï¿½ë·½ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
         /*TA1608 20120608Sp2 lingyz 20120726*/
         if(nBsFlg != 16 )
         {
@@ -1726,17 +1715,17 @@ int OTCFillDtlIn(TSHR_DTL_BTH* tShrDtlBth,int* nShrDtlIdx,TCFM_DTL_BTH* tCfmDtlB
 }
 
 /*====================================================================================
-  º¯ÊýÃû³Æ£ºOTCDltFailData
-  º¯Êý¹¦ÄÜ:È¥³ýÊ§°ÜµÄÈ·ÈÏÊý¾Ý 
-  ÊäÈë²ÎÊý:
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½OTCDltFailData
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:È¥ï¿½ï¿½Ê§ï¿½Üµï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:
   ...
-  Êä³ö²ÎÊý:ÎÞ 
-  ·µ »Ø Öµ:0:ÕýÈ·£»ÆäËû:Ê§°Ü
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½ 
+  ï¿½ï¿½ ï¿½ï¿½ Öµ:0:ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:Ê§ï¿½ï¿½
   =====================================================================================*/
 int OTCDltFailData(TCFM_BTH* tCfmBth,char sStcRId[][RID+1],double* fStcShr,char sBns[][2],double* fCrtShr,double* fCrtFShr,int* Rows)
 {
     int k,n;
-    /*¶ÔÓÚÊ§°ÜÊý¾ÝºÍOTC×ªÈëÊý¾Ý½øÐÐ¹ýÂË£¬²»ÐèÒª¼Ç·Ý¶î±ä»¯*/    
+    /*ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½ï¿½ï¿½ï¿½Ýºï¿½OTC×ªï¿½ï¿½ï¿½ï¿½ï¿½Ý½ï¿½ï¿½Ð¹ï¿½ï¿½Ë£ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½Ç·Ý¶ï¿½ï¿½ä»¯*/    
     for(n = 0;n < *Rows;n++){
         if((tCfmBth->status[n][0] != '1') || (strcmp(tCfmBth->outbusinflag[n],"20B") == 0)){
             for(k = n;k < *Rows - 1;k++){
@@ -1789,7 +1778,7 @@ int OTCDltFailData(TCFM_BTH* tCfmBth,char sStcRId[][RID+1],double* fStcShr,char 
                 strcpy(tCfmBth->rationno[k],tCfmBth->rationno[k + 1]);
                 tCfmBth->evennetvalue[k] = tCfmBth->evennetvalue[k + 1];
                 strcpy(tCfmBth->protectflag[k],tCfmBth->protectflag[k + 1]);
-                /*ÓÐ¹Ø»õ±Ò»ù½ðÒ»Ð©ÐÅÏ¢µÄÒÆ¶¯ 2003.11.11*/       
+                /*ï¿½Ð¹Ø»ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ò»Ð©ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½Æ¶ï¿½ 2003.11.11*/       
                 tCfmBth->chincome[k] = tCfmBth->chincome[k + 1];
                 tCfmBth->chshare[k] = tCfmBth->chshare[k + 1];
                 tCfmBth->confirmincome[k] = tCfmBth->confirmincome[k + 1];
@@ -1807,7 +1796,7 @@ int OTCDltFailData(TCFM_BTH* tCfmBth,char sStcRId[][RID+1],double* fStcShr,char 
                 tCfmBth->protectbalance[k] = tCfmBth->protectbalance[k + 1];
                 tCfmBth->protectshare[k] = tCfmBth->protectshare[k + 1];
                 tCfmBth->registfare[k] = tCfmBth->registfare[k + 1];
-                tCfmBth->fValueAddedFare[k] = tCfmBth->fValueAddedFare[k + 1]; /*×¨»§ÔöÖµ·Ñ lingyz 20120412*/
+                tCfmBth->fValueAddedFare[k] = tCfmBth->fValueAddedFare[k + 1]; /*×¨ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ lingyz 20120412*/
                 tCfmBth->newincome[k] = tCfmBth->newincome[k + 1];
                 tCfmBth->LongRegistPay[k] = tCfmBth->LongRegistPay[k + 1];
 
