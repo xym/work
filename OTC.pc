@@ -1,0 +1,1830 @@
+/*****************************************************************************
+  源程序名称: OTC.PC
+  软件著作权: 恒生公司 基金
+  系统名称:   OTC
+  模块名称:   OTC业务模块
+  功能说明:    完成OTC过户和费用计算
+  适用环境:
+  作者:     tianzx   xiaym   20130418
+  修改记录1：
+  修改人员：
+  修改日期:
+  修改说明:
+ *****************************************************************************/
+#include "fund.h"
+#include "OTC.h"
+
+/*全局变量定义*/
+int GTCFareZoneNum=0;
+int GOTCLiqudiateNum=0;
+extern int TTransferCommissionCfmDeal();
+
+OTCFAREZONE *GOTCFAREZONE=NULL;
+OTCLIQUDIATE *GOTCLIQUDIATE=NULL;
+
+/***************************************************************************************************
+  函数名称: LoadOTCFareZone 
+  函数功能: 加载OTC转让费用设置
+  函数说明:
+  输入参数: 
+  输出参数:无
+  返 回 值:0:正确;其他:失败
+  编者： 夏一民
+  时间： 2013-04-16
+ ***************************************************************************************************/
+int LoadOTCFareZone(void)
+{
+    int i = 0;
+    double fMaxDouble    = MAXDOUBLE;
+
+    EXEC SQL WHENEVER SQLERROR GOTO error;
+
+    if (GOTCFAREZONE != NULL)
+    {
+        free(GOTCFAREZONE);
+        GOTCFAREZONE = NULL;
+    }
+
+    EXEC SQL SELECT COUNT(1) INTO :GTCFareZoneNum FROM TOTCfarezone;
+
+    if (GTCFareZoneNum > 0)
+    {
+        if((GOTCFAREZONE = (OTCFAREZONE*)malloc(sizeof(OTCFAREZONE)*GTCFareZoneNum)) == NULL)
+        {
+            WriteLog(0,"FILE:%sLINE:%d %s\n",__FILE__,__LINE__,"系统分配内存错误！");
+            return ERR_SYS;
+        }
+        memset(GOTCFAREZONE, 0, sizeof(OTCFAREZONE)*GTCFareZoneNum);
+        EXEC SQL DECLARE csr_otcfarezone CURSOR FOR
+            SELECT c_fundcode,
+                   C_sharetype,
+                   c_commissiontype,
+                   c_outbusinflag,
+                   c_faretype,
+                   c_custtype,
+                   nvl(l_minbalance, 0),
+                   nvl(l_maxbalance, :fMaxDouble),
+                   nvl(f_ratio, 0.0),
+                   nvl(f_minfare, 0.0),
+                   nvl(f_maxfare, :fMaxDouble),
+                   nvl(l_minhold,0),
+                   nvl(l_maxhold, 2000000000)
+                       FROM TOTCFareZone
+                       ORDER BY C_FUNDCODE;
+
+        EXEC SQL OPEN csr_otcfarezone;
+        for (i = 0;i < GTCFareZoneNum;i++)
+        {
+            EXEC SQL FETCH csr_otcfarezone INTO
+                :GOTCFAREZONE[i].fundcode,
+                :GOTCFAREZONE[i].sharetype,
+                :GOTCFAREZONE[i].commissiontype,
+                :GOTCFAREZONE[i].outbusinflag,
+                :GOTCFAREZONE[i].faretype,
+                :GOTCFAREZONE[i].custtype,
+                :GOTCFAREZONE[i].minbalance,
+                :GOTCFAREZONE[i].maxbalance,
+                :GOTCFAREZONE[i].ratio,
+                :GOTCFAREZONE[i].minfare,
+                :GOTCFAREZONE[i].maxfare,
+                :GOTCFAREZONE[i].minhold,
+                :GOTCFAREZONE[i].maxhold;
+        }
+        EXEC SQL CLOSE csr_otcfarezone;
+    }
+
+    return 0;
+error:
+    BatchError(7001,"");
+    return -1;  
+
+}
+
+/***************************************************************************************************
+  函数名称: LoadOTCLiqudiate 
+  函数功能: 加载OTC转让清算设置
+  函数说明:
+  输入参数: 
+  输出参数:无
+  返 回 值:0:正确;其他:失败
+  编者： 夏一民
+  时间： 2013-04-16
+ ***************************************************************************************************/
+int LoadOTCLiqudiate(void)
+{
+    int i = 0;
+
+    EXEC SQL WHENEVER SQLERROR GOTO error;
+
+    if (GOTCLIQUDIATE!= NULL)
+    {
+        free(GOTCLIQUDIATE);
+        GOTCLIQUDIATE= NULL;
+    }
+
+    EXEC SQL SELECT COUNT(1) INTO :GOTCLiqudiateNum FROM TOTCLiqudiate;
+
+    if (GOTCLiqudiateNum > 0)
+    {
+        if((GOTCLIQUDIATE= (OTCLIQUDIATE*)malloc(sizeof(OTCLIQUDIATE)*GOTCLiqudiateNum)) == NULL)
+        {
+            WriteLog(0,"FILE:%sLINE:%d %s\n",__FILE__,__LINE__,"系统分配内存错误！");
+            return ERR_SYS;
+        }
+        memset(GOTCLIQUDIATE, 0, sizeof(OTCLIQUDIATE)*GOTCLiqudiateNum);
+        EXEC SQL DECLARE csr_otcliqudiate CURSOR FOR
+            SELECT c_fundcode,
+                   C_sharetype,
+                   SettlementMode,
+                   c_commissiontype,
+                   c_outbusinflag,
+                   nvl(l_settlementdays, 0)
+                       FROM TOTCLiqudiate
+                       ORDER BY C_FUNDCODE;
+        EXEC SQL OPEN csr_otcliqudiate;
+        for (i = 0;i < GOTCLiqudiateNum;i++)
+        {
+            EXEC SQL FETCH csr_otcliqudiate INTO
+                :GOTCLIQUDIATE[i].fundcode,
+                :GOTCLIQUDIATE[i].sharetype,
+                :GOTCLIQUDIATE[i].settlementmode,
+                :GOTCLIQUDIATE[i].commissiontype,
+                :GOTCLIQUDIATE[i].outbusinflag,
+                :GOTCLIQUDIATE[i].settlementdays;
+
+        }
+        EXEC SQL CLOSE csr_otcliqudiate;
+    }
+
+    return 0;
+error:
+    BatchError(7001,"");
+    return -1;  
+
+
+}
+
+/***************************************************************************************************
+  函数名称: GetOTCFareZone 
+  函数功能: 获取OTC转让费用设置
+  函数说明:
+  输入参数: 
+  输出参数:无
+  返 回 值:0:正确;其他:失败
+  编者： 夏一民
+  时间： 2013-04-16
+ ***************************************************************************************************/
+OTCFAREZONE  *GetOTCFareZone(const char *infundcode,  const char *sharetype, const char *commissiontype, const char *outbusinflag, const char *infaretype, const char incusttype, double inbalance, long holddays)
+{
+    int i = 0;
+    for(i=0;i<GTCFareZoneNum;i++)
+    {
+        WriteLog(0, "[%s:%d, GOTCFAREZONE[i].fundcode：%s]\n", __FILE__, __LINE__, GOTCFAREZONE[i].fundcode);
+
+        if (
+                strcmp(infundcode, GOTCFAREZONE[i].fundcode)==0 && \
+                strcmp(sharetype, GOTCFAREZONE[i].sharetype)==0 && \
+                strcmp(commissiontype, GOTCFAREZONE[i].commissiontype)==0 && \
+                strcmp(outbusinflag, GOTCFAREZONE[i].outbusinflag)==0 &&  \
+                strcmp(infaretype, GOTCFAREZONE[i].faretype)==0 && \
+                (incusttype==GOTCFAREZONE[i].custtype[0]) &&  \
+                (FNS(inbalance, GOTCFAREZONE[i].minbalance)==1)  &&  /* >= */   \
+                (FSM(inbalance, GOTCFAREZONE[i].maxbalance)==1 ) &&    /* <  */  \
+                (GOTCFAREZONE[i].minhold <= holddays) &&  \
+                (GOTCFAREZONE[i].maxhold > holddays)
+
+           )
+        {
+            return GOTCFAREZONE+i;
+        }
+    }
+
+    WriteLog(0, "[%s:%d, 无OTC转让费设置信息, 基金代码为：%s]\n", __FILE__, __LINE__, infundcode);
+    return NULL;
+
+}
+
+/***************************************************************************************************
+  函数名称: GetOTCLiqudiate 
+  函数功能: 获取OTC转让清算设置
+  函数说明:
+  输入参数: 
+  输出参数:无
+  返 回 值:0:正确;其他:失败
+  编者： 夏一民
+  时间： 2013-04-16
+ ***************************************************************************************************/
+OTCLIQUDIATE *GetOTCLiqudiate(const char *infundcode, const char *insharetype, const char *incommissiontype, const char *inoutbusinflag)
+{
+    int i = 0;
+    for(i=0;i<GOTCLiqudiateNum;i++)
+    {
+        if (
+                strcmp(infundcode,GOTCLIQUDIATE[i].fundcode)==0 &&  \
+                strcmp(insharetype,GOTCLIQUDIATE[i].sharetype)==0 && \
+                strcmp(incommissiontype,GOTCLIQUDIATE[i].commissiontype)==0 && \
+                strcmp(inoutbusinflag,GOTCLIQUDIATE[i].outbusinflag)==0 
+           )
+        {
+            return GOTCLIQUDIATE+i;
+        }
+    }
+
+    WriteLog(0, "[%s:%d, 无OTC清算设置信息, 基金代码为：%s]\n", __FILE__, __LINE__, infundcode);
+    return NULL;
+}
+
+/***************************************************************************************************
+  函数名称: FillTransferCommissionCfm 
+  函数功能: 根据TTransferCommission结构体内容，填充TTransferCommissionCfm结构体 
+  函数说明:
+  输入参数: 
+  输出参数:无
+  返 回 值:0:正确;其他:失败
+  编者： 夏一民
+  时间： 2013-04-16
+ ***************************************************************************************************/
+int FillTransferCommissionCfm( TRANSFERCOMMISSIONCFM *t, TRANSFERCOMMISSION *s,   int nCnt)
+{
+    int nIdx,nRt = 0;
+
+    if (s==NULL)
+    {
+        return 0;
+    }
+
+    for (nIdx = 0;nIdx < nCnt;nIdx++)
+    {
+        strcpy(t->commissionid[nIdx], s->commissionid[nIdx]);
+        strcpy(t->requestno[nIdx], s->requestno[nIdx]);
+        strcpy(t->outerfundcode[nIdx], s->outerfundcode[nIdx]);
+        strcpy(t->issuecode[nIdx], s->issuecode[nIdx]);
+        strcpy(t->fundno[nIdx], s->fundno[nIdx]);
+        strcpy(t->agencyno[nIdx], s->agencyno[nIdx]);
+        strcpy(t->tacode[nIdx], s->tacode[nIdx]);
+        strcpy(t->fundacco[nIdx], s->fundacco[nIdx]);
+        strcpy(t->tradeacco[nIdx], s->tradeacco[nIdx]);
+        strcpy(t->commissiontype[nIdx], s->commissiontype[nIdx]);
+        strcpy(t->outbusinflag[nIdx], s->outbusinflag[nIdx]);
+        t->tradeprice[nIdx]=s->tradeprice[nIdx];
+        t->shares[nIdx]=s->shares[nIdx];
+        strcpy(t->requestdate[nIdx], s->requestdate[nIdx]);
+        strcpy(t->requesttime[nIdx], s->requesttime[nIdx]);
+        strcpy(t->otheragency[nIdx], s->otheragency[nIdx]);
+        strcpy(t->otheracco[nIdx], s->otheracco[nIdx]);
+        strcpy(t->othertradeacco[nIdx], s->othertradeacco[nIdx]);
+        strcpy(t->targettacode[nIdx], s->targettacode[nIdx]);
+        strcpy(t->memo[nIdx], s->memo[nIdx]);
+        strcpy(t->fundcode[nIdx], s->fundcode[nIdx]);
+        strcpy(t->sharetype[nIdx], s->sharetype[nIdx]);
+        strcpy(t->cdate[nIdx], s->cdate[nIdx]);
+        strcpy(t->cause[nIdx], s->cause[nIdx]);
+        t->orgidx[nIdx] = nIdx;
+
+        strcpy(t->status[nIdx], "1");
+        if (strcmp(s->cdate[nIdx],"")==1)
+        {
+            strcpy(t->cdate[nIdx], GConfirmDate);
+        }
+        else
+        {
+            strcpy(t->cdate[nIdx], s->cdate[nIdx]);
+        }
+
+        if((nRt = GetAgcCfmNo(s->agencyno[nIdx],t->cserialno[nIdx])) == ERR_SET)
+        {
+            return -1;
+        }
+
+    }
+
+    return 0;
+}
+
+/***************************************************************************************************
+  函数名称: AddTTransferCommissionCfm 
+  函数功能: 根据AddTTransferCommissionCfm结构体内容，写表TTransferCommissionCfm
+  函数说明:
+  输入参数: 
+  输出参数:无
+  返 回 值:0:正确;其他:失败
+  编者： 夏一民
+  时间： 2013-04-16
+ ***************************************************************************************************/
+int AddTTransferCommissionCfm(TRANSFERCOMMISSIONCFM *s, int nCnt)
+{
+    EXEC SQL WHENEVER SQLERROR GOTO error;
+    int nidx= 0;
+    WriteLog(0, "[文件名=%s, 行数=%d, %s]\n", __FILE__, __LINE__, "修改确认数据开始......");
+
+    if (s==NULL)
+    {
+        WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "写TTransferCommissionCfm表出错。");
+        return -1;
+    }
+
+    for (nidx = 0;nidx < nCnt; nidx++)
+    {
+        EXEC SQL  INSERT INTO TTransferCommissionCfm 
+            (
+             C_CommissionID,
+             C_requestno,
+             C_OuterFundCode,
+             C_IssueCode,
+             C_FundNo,
+             C_agencyno,
+             C_TACode,
+             C_fundacco,
+             C_tradeacco,
+             C_commissiontype,
+             C_outbusinflag,
+             F_TradePrice,
+             F_shares,
+             D_requestdate,
+             D_requesttime,
+             C_otheragency,
+             C_otheracco,
+             C_othertradeacco,
+             C_targettacode,
+             C_memo,
+             C_cserialno,
+             F_ConfirmBalance,
+             F_Interest,
+             F_StampDuty,
+             F_backfare,
+             F_HandleCharge,
+             F_tafare,
+             F_fare,
+             F_AgencyFee,
+             F_SettleFee,
+             F_Supervisionfee,
+             F_OtherFee1,
+             F_OtherFee2,
+             F_OtherFee3,
+             F_OtherFee4,
+             F_OtherFee5,
+             F_OtherFee6,
+             F_OtherFee7,
+             F_OtherFee8,
+             F_OtherFee9,
+             c_LiqudiateSerialNo,
+             C_CreditTradeFlag,
+             C_EveningUpFlag,
+             C_FundType,
+             C_SettlementMode,
+             C_StockQuality,
+             C_MoneyType,
+             C_TradeType,
+             D_LiqudiateDate,
+             D_SettlementDate,
+             D_SendDate,
+             F_NetBalance,
+             F_LiqudiateBalance,
+             C_fundcode,
+             C_sharetype,
+             D_cdate,
+             C_status,
+             C_cause
+                 )
+
+                 SELECT 
+             :s->commissionid[nidx],
+             :s->requestno[nidx],
+             :s->outerfundcode[nidx],
+             :s->issuecode[nidx],
+             :s->fundno[nidx],
+             :s->agencyno[nidx],
+             :s->tacode[nidx],
+             :s->fundacco[nidx],
+             :s->tradeacco[nidx],
+             :s->commissiontype[nidx],
+             :s->outbusinflag[nidx],
+             :s->tradeprice[nidx],
+             :s->shares[nidx],
+             to_date(:s->requestdate[nidx], 'YYYYMMDD'),
+             to_date(:s->requesttime[nidx], 'HH24MMSS'),
+             :s->otheragency[nidx],
+             :s->otheracco[nidx],
+             :s->othertradeacco[nidx],
+             :s->targettacode[nidx],
+             :s->memo[nidx],
+             :s->cserialno[nidx],
+             :s->confirmbalance[nidx],
+             :s->interest[nidx],
+             :s->stampduty[nidx],
+             :s->backfare[nidx],
+             :s->handlecharge[nidx],
+             :s->tafare[nidx],
+             :s->fare[nidx],
+             :s->agencyfee[nidx],
+             :s->settlefee[nidx],
+             :s->supervisionfee[nidx],
+             :s->otherfee1[nidx],
+             :s->otherfee2[nidx],
+             :s->otherfee3[nidx],
+             :s->otherfee4[nidx],
+             :s->otherfee5[nidx],
+             :s->otherfee6[nidx],
+             :s->otherfee7[nidx],
+             :s->otherfee8[nidx],
+             :s->otherfee9[nidx],
+             :s->liqudiateserialno[nidx],
+             :s->credittradeflag[nidx],
+             :s->eveningupflag[nidx],
+             :s->fundtype[nidx],
+             :s->settlementmode[nidx],
+             :s->stockquality[nidx],
+             :s->moneytype[nidx],
+             :s->tradetype[nidx],
+             to_date(:s->liqudiatedate[nidx],'YYYYMMDD'),
+             to_date(:s->settlementdate[nidx],'YYYYMMDD'),
+             to_date(:s->senddate[nidx]),
+             :s->netbalance[nidx],
+             :s->liqudiatebalance[nidx],
+             :s->fundcode[nidx],
+             :s->sharetype[nidx],
+             to_date(:s->cdate[nidx],'YYYYMMDD'),
+             :s->status[nidx],
+             :s->cause[nidx]
+                 FROM dual;
+    }
+
+    EXEC SQL  COMMIT;
+
+    return 0;
+error:
+    BatchError(7001,"");
+    return -1;  
+}
+
+/***************************************************************************************************
+  函数名称: CrtOTCCustInfo 
+  函数功能: 生成全量账户信息
+  函数说明:
+  输入参数: 
+  输出参数:无
+  返 回 值:0:正确;其他:失败
+  编者： 夏一民
+  时间： 2013-04-16
+ ***************************************************************************************************/
+int CrtOTCCustInfo(void)
+{
+    EXEC SQL WHENEVER SQLERROR GOTO error;
+    EXEC SQL truncate table totccustinfo;
+
+    EXEC SQL 
+        INSERT INTO totccustinfo
+        (
+         C_agencyno,
+         C_fundacco,
+         C_tradeacco,
+         C_tacode,
+         C_custtype,
+         C_identitytype,
+         C_identityno,
+         C_custname,
+         C_shortname,
+         C_sex,
+         C_phone,
+         C_Nationality,
+         D_idnovaliddate,
+         C_RiskRate,
+         C_memo
+        )
+        SELECT 
+        b.C_agencyno,
+        b.C_fundacco,
+        c.C_tradeacco,
+        'TA90' C_tacode,
+        a.C_custtype,
+        a.C_identitytype,
+        a.C_identityno,
+        a.C_custname,
+        a.C_shortname,
+        a.C_sex,
+        a.C_phone,
+        a.C_Nationality,
+        a.D_idnovaliddate,
+        '' C_RiskRate,
+        a.c_memo
+            from TCUSTOMERINFO a,TACCOINFO b, tacconet c
+            where a.c_custno=b.c_custno
+            AND b.c_fundacco=c.c_fundacco
+            and b.c_agencyno=c.c_agencyno
+            and b.c_netno=c.c_netno;
+
+    EXEC SQL COMMIT;
+
+    return 0;
+error:
+    BatchError(7001,"");
+    return -1;  
+
+
+}
+
+/***************************************************************************************************
+  函数名称: CrtOTCShareInfo 
+  函数功能: 生成全量账户信息
+  函数说明:
+  输入参数: 
+  输出参数:无
+  返 回 值:0:正确;其他:失败
+  编者： 夏一民
+  时间： 2013-04-16
+ ***************************************************************************************************/
+int CrtOTCShareInfo(void)
+{
+    EXEC SQL WHENEVER SQLERROR GOTO error;
+    WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "生成全量账户信息开始。");
+    EXEC SQL TRUNCATE TABLE TOTCShareInfo;
+    EXEC SQL INSERT INTO TOTCShareInfo(
+            C_tacode,
+            c_outerfundcode,
+            C_IssueCode,
+            C_FundNo,
+            C_agencyno,
+            C_fundacco,
+            C_tradeacco,
+            F_useableshares,
+            F_totalshares,
+            F_frozenshares,
+            C_cserialno,
+            D_registdate,
+            C_detailflag,
+            C_fundcode,
+            C_sharetype
+            )
+        SELECT 
+        'TA90' C_tacode,
+        decode(b.c_outfundcode,'', a.c_fundcode, b.c_outfundcode),
+        'TA90' c_IssueCode,
+        '' C_FundNo,
+        a.C_agencyno,
+        a.C_fundacco,
+        a.C_tradeacco,
+        a.f_realshares - a.f_frozenshares,
+        a.f_realshares,
+        a.f_frozenshares,
+        '' c_cserialno,
+        '' D_registdate,
+        '0' C_detailflag,
+        a.C_fundcode,
+        a.C_sharetype
+            FROM tstaticshares a, tfundcodechange b
+            WHERE a.c_fundcode=b.c_fundcode(+)
+            AND a.c_sharetype=b.c_sharetype(+);
+
+    EXEC SQL INSERT INTO TOTCShareInfo(
+            C_tacode,
+            C_OuterFundCode,
+            C_IssueCode,
+            C_FundNo,
+            C_agencyno,
+            C_fundacco,
+            C_tradeacco,
+            F_useableshares,
+            F_totalshares,
+            F_frozenshares,
+            C_cserialno,
+            D_registdate,
+            C_detailflag,
+            C_fundcode,
+            C_sharetype
+            )
+        SELECT 'TA90' C_tacode,
+               decode(b.c_outfundcode,'', a.c_fundcode, b.c_outfundcode),
+               'TA90' c_IssueCode,
+               '' C_FundNo,
+               a.C_agencyno,
+               a.C_fundacco,
+               a.C_tradeacco,
+               '',
+               a.f_remainshares,
+               '',
+               a.c_cserialno,
+               a.d_registdate,
+               '1' C_detailflag,
+               a.C_fundcode,
+               a.C_sharetype
+                   FROM tsharedetail a, tfundcodechange b
+                   WHERE a.c_fundcode=b.c_fundcode(+)
+                   AND a.c_sharetype=b.c_sharetype(+);
+    EXEC SQL COMMIT;
+    WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "生成全量账户信息结束。");
+
+    return 0;
+
+error:
+    BatchError(7001,"");
+    return -1; 
+
+}
+
+
+/***************************************************************************
+  函数名称:OTCInitialVar
+  函数功能:相关系统数据初始化
+  输入参数:
+  输出参数:
+  返 回 值:-1:失败 0:成功
+ ***************************************************************************/
+int OTCInitialVar(void)
+{
+    int nil=0;
+
+
+
+    /*加载内存*/
+    if((nil = InitialVar(0)) != 0)
+    {
+        return nil; 
+    }
+
+    /*加载OTC相关参数*/
+    nil=LoadOTCFareZone();
+    if (nil !=0)
+    {
+        WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "加载费率设置出错。" );
+        return -1;
+
+    }
+
+    nil=LoadOTCLiqudiate();
+    if (nil !=0)
+    {
+        WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "加载清算设置出错。" );
+        return -1;
+
+    }
+
+    /*加载系统参数*/
+    //GSysParameter.OTCTransferAgent=atoi(GetSysValue("System","OTCTransferAgent","0")); /*xiaym TA1907 2013-04-16 20130505Build  中信证券开通OTC登记托管功能*/
+
+    return 0;
+}
+
+/***************************************************************************
+  函数名称:sv_OTCCfmDeal
+  函数功能:转换确认处理
+  输入参数: TPSVCINFO *rqst; 不用
+  输出参数: TPSVCINFO *rqst;
+  成功：0;OK
+  失败：1;错误原因
+  返 回 值:无
+  编者： 夏一民
+  时间：2013-04-25
+ ***************************************************************************/
+int  sv_OTCCfmDeal(TPSVCINFO *rqst)
+{
+    int nil=0;
+    char *sBuf = NULL;
+
+    WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "转换确认处理初始化开始。");
+
+    sBuf = tpalloc("STRING",NULL,BUF_SIZE);
+    if(sBuf == NULL) {
+        WriteLog(0,"分配内存错误！");
+        return -1;
+    }
+
+    nil= OTCInitialVar();
+    if (nil !=0 )
+    {
+        WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "OTC初始化出错。" );
+        return -1;
+    }
+
+    WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "转换确认处理初始化结束。");
+
+    WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "OTC转换确认处理开始。");
+
+    nil =TTransferCommissionCfmDeal();
+    if (nil !=0 )
+    {
+        WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "调用TTransferCommissionCfmDeal函数出错。" );
+        return -1;
+    }
+
+    WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "OTC转换确认处理结束。");
+
+
+    strcpy(sBuf,"0;OK!");
+    GClientID = NULL;
+    tpreturn(TPSUCCESS, 0, sBuf, 0L, 0);
+
+    return 0;
+}
+
+/*====================================================================================
+  函数名称：BusinCodeChange
+  函数功能:   OTC内外部业务代码转换
+  输入参数:   char *fundcode, char *sharetype
+  输出参数：fundcode, sharetype)
+  返  回  值:   0:正确；其他:失败
+  作        者:   tianzx
+  =====================================================================================*/
+int BusinCodeChange(char *outfundcode, char *fundcode, char *sharetype)
+{
+    EXEC SQL WHENEVER SQLERROR GOTO sqlerr;
+    char fundcodetmp[7] = "";
+    char sharetypetmp[2] = "";
+
+    EXEC SQL SELECT C_FUNDCODE, C_SHARETYPE INTO :fundcodetmp,:sharetypetmp 
+        FROM TFUNDCODECHANGE
+        WHERE C_OUTFUNDCODE = :outfundcode;
+
+    if(sqlca.sqlerrd[2] == 0)
+    {
+        strcpy(fundcode,outfundcode);
+        strcpy(sharetype,"A");
+    }
+    strcpy(fundcode,fundcodetmp);
+    strcpy(sharetype,sharetypetmp);
+
+    return 0;
+sqlerr:
+    BatchError(7001,"");
+    return ERR_ORC;    
+}
+
+/*====================================================================================
+  函数名称：CltTransferCommissionFee
+  函数功能:计算费用。根据条件，计算费用
+  输入参数:
+  ...
+  输出参数:无 
+  返 回 值:0:正确；其他:失败
+  作        者:   tianzx
+  =====================================================================================*/
+int CltTransferCommissionFee(TRANSFERCOMMISSIONCFM *t,int k, int iDtlRows)
+{
+    double fCfmBlc = 0.0;/*确认金额*/ 
+
+    fCfmBlc = t->shares[k] * t->tradeprice[k];    
+    t->confirmbalance[k] = fCfmBlc;/*确认金额*/
+    if(strcmp(t->outbusinflag[k],"20S") == 0)/*转换出需要根据明细算费*/
+    {
+        CltTransferOutFee(t, k, iDtlRows);
+    }
+    else/*转入按照汇总计费*/ 
+    {
+        CltTransferInFee(t,k);
+    }        
+    /*转让手续费 = 所有费用汇总*/
+    t->fare[k] = t->stampduty[k] + t->backfare[k] + t->handlecharge[k] + t->tafare[k] + t->agencyfee[k] + t->settlefee[k] + t->supervisionfee[k];
+    return 0;
+}
+
+/*====================================================================================
+  函数名称：CltTransferOutFee
+  函数功能:计算转出费用。根据条件，计算转出费用
+  输入参数:
+  ...
+  输出参数:无 
+  返 回 值:0:正确；其他:失败
+  作        者:   tianzx
+  =====================================================================================*/
+int CltTransferOutFee(TRANSFERCOMMISSIONCFM *t,int k, int iDtlRows)
+{
+    double fCfmBlc = 0.0;/*确认金额*/
+    int nIdx = 0;
+    long hold = 0;/*明细持有日期*/
+    double stampduty = 0.0;
+    double backfare =0.0;
+    double handlecharge = 0.0;
+    double tafare= 0.0;
+    double agencyfee = 0.0;
+    double settlefee = 0.0;
+    double supervisionfee = 0.0;
+    OTCFAREZONE *farezone = NULL;
+    EXEC SQL WHENEVER SQLERROR GOTO sqlerr;
+    fCfmBlc = t->shares[k] * t->tradeprice[k];   
+    for(nIdx = 0,gtShrDtlS = gtShrDtlSHd;nIdx < iDtlRows;nIdx++,gtShrDtlS = gtShrDtlS->tNxt)
+    {
+        /*变量清零*/
+        stampduty = 0.0;
+        backfare =0.0;
+        handlecharge = 0.0;
+        tafare= 0.0;
+        agencyfee = 0.0;
+        settlefee = 0.0;
+        supervisionfee = 0.0;
+        hold = 0;
+        /*计算明细持有日期*/
+        EXEC SQL SELECT TRUNC(TO_DATE(:GConfirmDate,'yyyymmdd') - TO_DATE(:gtShrDtlS->sRegDt,'yyyymmdd')) INTO :hold FROM DUAL;
+        /*印花税*/    
+        if((farezone = GetOTCFareZone(t->fundcode[k], t->sharetype[k], t->commissiontype[k], t->outbusinflag[k], "1", GetCustType(t->fundcode[k]), fCfmBlc, hold)) == NULL)
+        {
+            stampduty = 0;
+        }
+        else
+        {
+            stampduty = MIN((MAX((gtShrDtlS->fCfmShr * t->tradeprice[k] * farezone->ratio),farezone->minfare)),farezone->maxfare);
+        }
+        t->stampduty[k] += stampduty;
+
+        /*后收费*/
+        if(strcmp(gtShrDtlS->sSrcType,"T") != 0)/*需要收后收费*/
+        {   
+            if((farezone = GetOTCFareZone(t->fundcode[k], t->sharetype[k], t->commissiontype[k], t->outbusinflag[k], "2", GetCustType(t->fundcode[k]), fCfmBlc, hold)) == NULL)
+            {
+                backfare = 0;
+            }
+            else
+            {        
+                backfare = MIN((MAX((gtShrDtlS->fCfmShr * t->tradeprice[k] * farezone->ratio),farezone->minfare)),farezone->maxfare);
+            }
+            strcpy(gtShrDtlS->sSrcType,"T"); 
+        }
+        t->backfare[k] += backfare; 
+
+        /*经手费*/
+        if((farezone = GetOTCFareZone(t->fundcode[k], t->sharetype[k], t->commissiontype[k], t->outbusinflag[k], "3", GetCustType(t->fundcode[k]), fCfmBlc, hold)) == NULL)
+        {
+            handlecharge = 0;
+        }
+        else 
+        { 
+            handlecharge = MIN((MAX((gtShrDtlS->fCfmShr * t->tradeprice[k] * farezone->ratio),farezone->minfare)),farezone->maxfare);
+        }
+        t->handlecharge[k] += handlecharge;
+
+        /*过户费*/
+        if((farezone = GetOTCFareZone(t->fundcode[k], t->sharetype[k], t->commissiontype[k], t->outbusinflag[k], "4", GetCustType(t->fundcode[k]), fCfmBlc, hold)) == NULL)
+        {
+            tafare = 0;
+        }
+        else 
+        {
+            tafare = MIN((MAX((gtShrDtlS->fCfmShr * t->tradeprice[k] * farezone->ratio),farezone->minfare)),farezone->maxfare);
+        }
+        t->tafare[k] += tafare;
+
+        /*代理费*/
+        if((farezone = GetOTCFareZone(t->fundcode[k], t->sharetype[k], t->commissiontype[k], t->outbusinflag[k], "5", GetCustType(t->fundcode[k]), fCfmBlc, hold)) == NULL)
+        {
+            agencyfee = 0;
+        }
+        else
+        {
+            agencyfee = MIN((MAX((gtShrDtlS->fCfmShr * t->tradeprice[k] * farezone->ratio),farezone->minfare)),farezone->maxfare);
+        }
+        t->agencyfee[k] += agencyfee;
+
+        /*结算费*/
+        if((farezone = GetOTCFareZone(t->fundcode[k], t->sharetype[k], t->commissiontype[k], t->outbusinflag[k], "6", GetCustType(t->fundcode[k]), fCfmBlc, hold)) == NULL)
+        {
+            settlefee = 0;
+        }
+        else
+        {
+            settlefee = MIN((MAX((gtShrDtlS->fCfmShr * t->tradeprice[k] * farezone->ratio),farezone->minfare)),farezone->maxfare);
+        }
+        t->settlefee[k] += settlefee;
+        /*监管规费*/
+        if((farezone = GetOTCFareZone(t->fundcode[k], t->sharetype[k], t->commissiontype[k], t->outbusinflag[k], "7", GetCustType(t->fundcode[k]), fCfmBlc, hold)) == NULL)
+        {
+            supervisionfee = 0;
+        }
+        else
+        {
+            supervisionfee = MIN((MAX((gtShrDtlS->fCfmShr * t->tradeprice[k] * farezone->ratio),farezone->minfare)),farezone->maxfare);
+        }
+        t->supervisionfee[k] += supervisionfee;
+    }
+    return 0;
+sqlerr:
+    BatchError(7001,"");
+    return ERR_ORC;    
+}
+
+/*====================================================================================
+  函数名称：CltTransferInFee
+  函数功能:计算转入费用。根据条件，计算转入费用
+  输入参数:
+  ...
+  输出参数:无 
+  返 回 值:0:正确；其他:失败
+  作        者:   tianzx
+  =====================================================================================*/
+int CltTransferInFee(TRANSFERCOMMISSIONCFM *t,int k)
+{
+    double fCfmBlc = 0.0;/*确认金额*/
+    OTCFAREZONE *farezone = NULL;
+    fCfmBlc = t->shares[k] * t->tradeprice[k];   
+    /*印花税*/    
+    if((farezone = GetOTCFareZone(t->fundcode[k], t->sharetype[k], t->commissiontype[k], t->outbusinflag[k], "1", GetCustType(t->fundcode[k]), fCfmBlc, 0)) == NULL)
+    {
+        t->stampduty[k] = 0;
+    }
+    else
+    {
+        t->stampduty[k] = MIN((MAX((fCfmBlc * farezone->ratio),farezone->minfare)),farezone->maxfare);
+    }
+    /*后收费*/
+    if((farezone = GetOTCFareZone(t->fundcode[k], t->sharetype[k], t->commissiontype[k], t->outbusinflag[k], "2", GetCustType(t->fundcode[k]), fCfmBlc, 0)) == NULL)
+    {
+        t->backfare[k] = 0;
+    }
+    else
+    {         
+        t->backfare[k] = MIN((MAX((fCfmBlc * farezone->ratio),farezone->minfare)),farezone->maxfare);
+    }
+    /*经手费*/
+    if((farezone = GetOTCFareZone(t->fundcode[k], t->sharetype[k], t->commissiontype[k], t->outbusinflag[k], "3", GetCustType(t->fundcode[k]), fCfmBlc, 0)) == NULL)
+    {
+        t->handlecharge[k] = 0;
+    }
+    else
+    {    
+        t->handlecharge[k] = MIN((MAX((fCfmBlc * farezone->ratio),farezone->minfare)),farezone->maxfare);
+    }
+    /*过户费*/
+    if((farezone = GetOTCFareZone(t->fundcode[k], t->sharetype[k], t->commissiontype[k], t->outbusinflag[k], "4", GetCustType(t->fundcode[k]), fCfmBlc, 0)) == NULL)
+    {
+        t->tafare[k] = 0;
+    }
+    else
+    {   
+        t->tafare[k] = MIN((MAX((fCfmBlc * farezone->ratio),farezone->minfare)),farezone->maxfare);
+    }
+    /*代理费*/
+    if((farezone = GetOTCFareZone(t->fundcode[k], t->sharetype[k], t->commissiontype[k], t->outbusinflag[k], "5", GetCustType(t->fundcode[k]), fCfmBlc, 0)) == NULL)
+    {
+        t->handlecharge[k] = 0;
+    }
+    else
+    {    
+        t->agencyfee[k] = MIN((MAX((fCfmBlc * farezone->ratio),farezone->minfare)),farezone->maxfare);
+    }
+    /*结算费*/
+    if((farezone = GetOTCFareZone(t->fundcode[k], t->sharetype[k], t->commissiontype[k], t->outbusinflag[k], "6", GetCustType(t->fundcode[k]), fCfmBlc, 0)) == NULL)
+    {
+        t->settlefee[k] = 0;
+    }
+    else
+    {    
+        t->settlefee[k] = MIN((MAX((fCfmBlc * farezone->ratio),farezone->minfare)),farezone->maxfare);
+    }
+    /*监管规费*/
+    if((farezone = GetOTCFareZone(t->fundcode[k], t->sharetype[k], t->commissiontype[k], t->outbusinflag[k], "7", GetCustType(t->fundcode[k]), fCfmBlc, 0)) == NULL)
+    {
+        t->supervisionfee[k] = 0;
+    }
+    else
+    {    
+        t->supervisionfee[k] = MIN((MAX((fCfmBlc * farezone->ratio),farezone->minfare)),farezone->maxfare);
+    }
+    return 0;
+
+}
+/*====================================================================================
+  函数名称：LiqudiateOTCTransfer
+  函数功能:   OTC计算转让清算相关信息
+  输入参数:   TTransferCommissionCfm结构体
+  输出参数：TTransferCommissionCfm结构体
+  返  回  值:   0:正确；其他:失败
+  作        者:   tianzx
+  =====================================================================================*/
+int LiqudiateOTCTransfer(TRANSFERCOMMISSIONCFM *t,int k)
+{
+    double settlementdays =0.0;/*交收天数*/
+    EXEC SQL WHENEVER SQLERROR GOTO sqlerr;
+    OTCLIQUDIATE *otcliqudiate = NULL;
+    /*获取转让交收天数*/
+    if((otcliqudiate = GetOTCLiqudiate(t->fundcode[k],t->sharetype[k],t->commissiontype[k],t->outbusinflag[k])) == NULL)
+    {
+        settlementdays = 0;
+    }
+    else
+    {
+        settlementdays = otcliqudiate->settlementdays;
+    }
+    /*计算清算本金，如果是转让出业务，则清算本金=成交价格X成交数量
+      如果是转让入业务，则清算本金=-1X成交价格X成交数量*/
+    /*计算收付净额，如果是转让出业务，则收付净额=成交价格X成交数量-经手费-印花税等所有计算出来的费用
+      如果是转让入业务，则收付净额=-1 X（成交价格X成交数量+经手费+印花税等所有计算出来的费用）*/
+    if(strcmp(t->outbusinflag[k],"20S") == 0)/*转换出*/
+    {
+        t->liqudiatebalance[k] = t->confirmbalance[k];/*清算本金*/
+        t->netbalance[k] = t->confirmbalance[k] - t->fare[k];/*收付净额*/
+    }
+    if(strcmp(t->outbusinflag[k],"20B") == 0)
+    {
+        t->liqudiatebalance[k] = -1 * t->confirmbalance[k];/*清算本金*/
+        t->netbalance[k] = -1 * (t->confirmbalance[k] + t->fare[k]);/*收付净额*/
+    }
+    /*计算交收日期，交收日期=成交日期+交收天数个工作日*/
+    EXEC SQL SELECT GetRealDays(:t->fundcode[k],:t->agencyno[k],:t->requestdate[k],:settlementdays) into :t->settlementdate[k] from dual;
+    WriteLog(0, "[%s:%d, t->settlementdate[k]=%s]\n", __FILE__, __LINE__, t->settlementdate[k]);
+    if (strcmp(t->settlementdate[k],"")==0)
+    {
+        strcpy(t->settlementdate[k], t->requestdate[k]);  
+    }
+    /*清算日期，当前系统申请日期*/
+    strcpy(t->liqudiatedate[k], GRequestDate); 
+    /*获取清算流水号*/
+    EXEC SQL SELECT (lpad(sqn_confirm.nextval,12,'0')) INTO :t->liqudiateserialno[k] FROM DUAL;
+
+
+    return 0;         
+sqlerr:
+    BatchError(7001,"");
+    return ERR_ORC;        
+}
+
+
+/*====================================================================================
+  函数名称：MdTransferCommission
+  函数功能:根据申请表的rowid修改申请表
+  输入参数:
+  ...
+  输出参数:无 
+  返 回 值:0:正确；其他:失败
+  作        者:   tianzx
+  =====================================================================================*/
+int MdTransferCommission(TRANSFERCOMMISSION* t,char sRowId[][RID + 1],int nRow)
+{
+    /*
+       int nIdx;
+       WriteLog(0,"nRow[%d]\n",nRow);
+       for(nIdx = 0;nIdx < nRow;nIdx++)
+       WriteLog(0,"status[%s],cause[%s],cdate[%s],fundcode[%s],sharetype[%s],rid[%s]\n",t->status[nIdx],
+       t->cause[nIdx],t->cdate[nIdx],t->fundcode[nIdx],t->sharetype[nIdx],sRowId[nIdx]);
+       */  
+    WriteLog(0, "[文件名=%s, 行数=%d, %s]\n", __FILE__, __LINE__, "修改申请数据开始......");
+    EXEC SQL WHENEVER SQLERROR GOTO SQLERR;
+    if(nRow > 0)
+    {
+        /*先更新转出的申请，再根据转出来确认转入*/
+        EXEC SQL FOR :nRow UPDATE TTransferCommission  SET 
+            C_STATUS = :t->status,
+                     C_CAUSE = :t->cause,
+                     D_CDATE = :t->cdate,
+                     C_FUNDCODE = :t->fundcode,
+                     C_SHARETYPE = :t->sharetype
+                         WHERE RowId = :sRowId
+                         and TRIM(:t->status)!='0';
+
+    }
+    WriteLog(0, "[文件名=%s, 行数=%d, %s]\n", __FILE__, __LINE__, "修改申请数据结束......");
+    return 0;
+SQLERR:
+    BatchError(7001,"");
+    return ERR_ORC;
+}
+
+/*====================================================================================
+  函数名称：TrimTTransferCommission
+  函数功能:   TRIM TrimTTransferCommission的字段
+  输入参数:
+  ...
+  输出参数:无 
+  返 回 值:0:正确；其他:失败
+  作        者:   tianzx
+  =====================================================================================*/
+int TrimTTransferCommission(TRANSFERCOMMISSION* transfercommission,int nRow)
+{
+    int nIdx = 0;
+
+    for(nIdx = 0;nIdx < nRow;nIdx++){
+        Trim(transfercommission->commissionid[nIdx]);
+        Trim(transfercommission->requestno[nIdx]);
+        Trim(transfercommission->outerfundcode[nIdx]);
+        Trim(transfercommission->issuecode[nIdx]);
+        Trim(transfercommission->fundno[nIdx]);
+        Trim(transfercommission->agencyno[nIdx]);
+        Trim(transfercommission->tacode[nIdx]);
+        Trim(transfercommission->fundacco[nIdx]);
+        Trim(transfercommission->tradeacco[nIdx]);
+        Trim(transfercommission->commissiontype[nIdx]);
+        Trim(transfercommission->outbusinflag[nIdx]);
+        Trim(transfercommission->requestdate[nIdx]);
+        Trim(transfercommission->requesttime[nIdx]);
+        Trim(transfercommission->otheragency[nIdx]);
+        Trim(transfercommission->otheracco[nIdx]);
+        Trim(transfercommission->othertradeacco[nIdx]);
+        Trim(transfercommission->targettacode[nIdx]);
+        Trim(transfercommission->memo[nIdx]);
+        Trim(transfercommission->fundcode[nIdx]);
+        Trim(transfercommission->sharetype[nIdx]);
+        Trim(transfercommission->cdate[nIdx]);
+        Trim(transfercommission->status[nIdx]);
+        Trim(transfercommission->cause[nIdx]);
+    }
+
+    return 0;
+}
+
+/*====================================================================================
+  函数名称：TTransferCommissionCfmDeal
+  函数功能:   OTC转换确认处理
+  输入参数:   无
+  输出参数：无
+  返  回  值:   0:正确；其他:失败
+  作        者:   tianzx
+  =====================================================================================*/
+int TTransferCommissionCfmDeal()
+{
+    struct timeb time;
+    int  iRows = 0;
+    int  iDealRows = 0;
+    int  k = 0;
+    int nRt = 0;
+    int iDtlRows    = 0;          /* 份额明细条数 */
+    int nRowCfmDtl = 0;
+    double fDiffFare=0.0; 
+    double fCfmBlc=0.0;
+    int nRowShrDtl = 0;
+    char  RowId[ANUM][19];
+    char  sStcRId[ANUM][19];
+    char sBnsType[ANUM][2];
+    double nohavet0_share = 0.0;
+    double have_useableshare = 0.0;
+    double  have_share=0.0;         /*个人原有的份额(按网点)*/
+    double  freeze_share=0.0;       /*冻结份额*/
+    TFUNDINFO       *fundinfo=NULL;
+    TFARE_RST tFareRst;             /*费用信息*/   
+    TCFM_BTH tCfmBth;               /*确认数据数组*/   
+    TCFM_DTL_BTH tCfmDtlBth;        /*确认明细数据数组*/
+    TSTC_SHR_BTH tStcShrBth;        /*份额数据数组*/ 
+    TREQUEST_S tRqtHd;              /*非交易过户*/   
+    TRANSFERCOMMISSION transfer;
+    TRANSFERCOMMISSIONCFM transfercfm;
+    TSHR_DTL_BTH tShrDtlBth;        /*份额明细数据数组*/                                              
+    TSHR_CRT_BTH tShrCrtBth;        /*份额变化流水数组*/ 
+    TRQT_RDM tRqt;                  /*赎回等交易的基金帐号等条件数据 用于赎回等的明细处理*/
+
+    EXEC SQL WHENEVER SQLERROR GOTO sqlerr;
+    WriteLog(0,"OTC转换确认处理开始......\n");
+    ftime(&time);
+    //取出TTransferCommission中c_status=0,d_cdate=当前系统确认日期的数据
+    EXEC SQL DECLARE Cur_OTC CURSOR FOR
+        SELECT C_CommissionID, C_requestno, C_OuterFundCode, C_IssueCode, C_FundNo,C_agencyno, C_TACode, 
+               C_fundacco, C_tradeacco, C_commissiontype, C_outbusinflag, F_TradePrice,F_Shares, D_requestdate, 
+               to_char(d_requesttime, 'HH24MMSS') , C_otheragency, C_otheracco, C_othertradeacco,C_targettacode, 
+               C_memo, C_fundcode, C_sharetype, D_cdate, C_status, C_cause, D_originaldate, C_originalno, ROWID
+                   FROM TTransferCommission
+                   WHERE nvl(C_STATUS,'0') = '0'
+                   AND D_REQUESTDATE = to_date(:GRequestDate,'yyyymmdd')
+                   ORDER BY C_REQUESTNO;          
+
+    EXEC SQL OPEN Cur_OTC;
+    WriteLog(0,"  Opened. %.3lf 秒\n",DiffTime(time));
+    iRows=ANUM;
+    iDealRows=0;
+    while(iRows==ANUM)
+    {
+        memset(&transfer,0,sizeof(transfer));
+        memset(&transfercfm,0,sizeof(transfercfm));
+        memset(RowId,0,sizeof(RowId));
+        memset(sStcRId,0,sizeof(sStcRId));
+        memset(&tShrDtlBth,0,sizeof(tShrDtlBth));
+        memset(&tShrCrtBth,0,sizeof(tShrCrtBth));
+        memset(&tCfmBth,0,sizeof(tCfmBth));
+        memset(&tCfmDtlBth,0,sizeof(tCfmDtlBth));
+        memset(&tRqtHd,0,sizeof(tRqtHd));
+        memset(&tStcShrBth,0,sizeof(tStcShrBth));
+
+        EXEC SQL FETCH Cur_OTC INTO :transfer,:RowId;
+        iRows = sqlca.sqlerrd[2] - iDealRows;
+        iDealRows = sqlca.sqlerrd[2];
+        WriteLog(0,"Fetched nRow=%d %.3lf 秒\n",iRows,DiffTime(time));
+        if (iRows==0)
+            break;
+        /*对FETCH 出的数据TRIM 掉空格*/
+        TrimTTransferCommission(&transfer,iRows);
+        /*对确认数组的一些基本信息赋值*/  
+        if((nRt = FillTransferCommissionCfm(&transfercfm,&transfer,iRows)) != 0)
+        {
+            WriteLog(0, "[文件名=%s, 行数=%d, %]\n", __FILE__, __LINE__, "确认数组的基本信息赋值失败......");
+        }    
+        for (k=0;k<iRows;k++)
+        {
+            strcpy(tStcShrBth.lastmodify[k],GConfirmDate); 
+            /*step 1:OTC内外部业务代码转换*/
+            if((nRt = BusinCodeChange(transfercfm.outerfundcode[k],transfercfm.fundcode[k],transfercfm.sharetype[k])) != 0)
+            {
+                WriteLog(0, "[文件名=%s, 行数=%d, %s]\n", __FILE__, __LINE__, "转换内外部业务代码出错......");
+            }
+            /*申请数据结构体赋值*/
+            strcpy(transfer.fundcode[k],transfercfm.fundcode[k]);
+            strcpy(transfer.sharetype[k],transfercfm.sharetype[k]);
+            strcpy(transfer.cdate[k],GConfirmDate);
+            if(strcmp(transfer.requestdate[k],"") == 0)
+            {
+                strcpy(transfer.requestdate[k],GRequestDate);
+            }    
+            /*赎回明细结构体赋值*/
+            memset(&tRqt,0,sizeof(tRqt));
+            strcpy(tRqt.tRqtS.fundacco,transfercfm.fundacco[k]);
+            strcpy(tRqt.tRqtS.tradeacco,transfercfm.tradeacco[k]);
+            strcpy(tRqt.tRqtS.fundcode,transfercfm.fundcode[k]);
+            strcpy(tRqt.tRqtS.sharetype,transfercfm.sharetype[k]);
+            strcpy(tRqt.tRqtS.agencyno,transfercfm.agencyno[k]);
+            strcpy(tRqt.tRqtS.netno,transfercfm.agencyno[k]);
+            strcpy(tRqt.originaldate,Trim(transfer.originaldate[k]));
+            strcpy(tRqt.originalno,Trim(transfer.originalno[k]));
+            strcpy(tRqt.tRqtS.businflag,"12");
+            tRqt.shares = transfercfm.shares[k];
+            /*对确认委托数据结构体赋值*/
+            transfercfm.shares[k] = transfer.shares[k];
+            strcpy(transfercfm.senddate[k],GRequestDate);
+            strcpy(transfercfm.cdate[k],GConfirmDate);
+            strcpy(transfercfm.liqudiatedate[k],GRequestDate);
+            strcpy(transfercfm.settlementdate[k],transfer.requestdate[k]);
+            /*对确认出结构体赋值，以便之后插明细和流水*/
+            tCfmBth.confirmshares[k] = transfer.shares[k];
+            strcpy(tCfmBth.fundcode[k],transfercfm.fundcode[k]);
+            strcpy(tCfmBth.tradeacco[k],transfercfm.tradeacco[k]);
+            strcpy(tCfmBth.fundacco[k],transfercfm.fundacco[k]);
+            strcpy(tCfmBth.sharetype[k],transfercfm.sharetype[k]);
+            strcpy(tCfmBth.agencyno[k],transfercfm.agencyno[k]);
+            strcpy(tCfmBth.netno[k],transfercfm.agencyno[k]);
+            strcpy(tCfmBth.status[k],transfercfm.status[k]);
+            strcpy(tCfmBth.requestdate[k],transfercfm.requestdate[k]);
+            strcpy(tCfmBth.cdate[k],GConfirmDate);
+            strcpy(tCfmBth.cserialno[k],transfercfm.cserialno[k]);
+            strcpy(tCfmBth.requestno[k],transfercfm.requestno[k]);
+            tCfmBth.orgidx[k] = transfercfm.orgidx[k];
+            strcpy(tCfmBth.businflag[k],"14");
+            strcpy(tCfmBth.outbusinflag[k],"033");/*先写成非交易过户出*/
+            if(strcmp(transfercfm.outbusinflag[k],"20S") == 0)/*转出*/
+            {
+                /*step 2:判断可用份额*/
+                GetShareNew(transfer.fundacco[k],transfer.tradeacco[k],transfer.fundcode[k],transfer.sharetype[k],
+                        transfer.agencyno[k],transfer.agencyno[k],&nohavet0_share,&freeze_share,&have_share,sStcRId[k]);
+                EXEC SQL SAVEPOINT SVP_UNTRD_TRF;
+                have_useableshare = nohavet0_share - freeze_share;            
+                if(FBG(transfer.shares[k],have_useableshare))
+                {
+                    strcpy(transfer.status[k],"2");
+                    sprintf(transfer.cause[k],"7675超过可用的%s份额数",GRepName);
+                    strcpy(transfercfm.status[k],transfer.status[k]);
+                    strcpy(transfercfm.cause[k],transfer.cause[k]);
+                    strcpy(tCfmBth.status[k],transfercfm.status[k]);
+                    tCfmBth.confirmshares[k] = 0;  
+                    transfercfm.confirmbalance[k] = 0;
+                }
+
+                /*step 3:份额赎回，处理明细*/
+                nRt = ShrRdc(&tRqt,transfer.tradeprice[k],&fDiffFare,&tFareRst,&fCfmBlc,&iDtlRows,&(tCfmBth.confirmincome[k]),&(tCfmBth.interest[k]),&(tCfmBth.interesttax[k]),&(tCfmBth.protectshare[k]));
+                if((nRt != 0)&&(nRt != ERR_NOSHR)&&(nRt != ERR_PMS))
+                {
+                    EXEC SQL ROLLBACK WORK;
+                    EXEC SQL CLOSE Cur_OTC;
+                    return ERR_ORC;
+                }
+
+                if(nRt == ERR_NOSHR)
+                {
+                    EXEC SQL ROLLBACK TO SVP_UNTRD_TRF;
+                    strcpy(transfer.status[k],"2");
+                    sprintf(transfer.cause[k],"7675超过可用的%s份额数",GRepName);
+                    strcpy(transfercfm.status[k],transfer.status[k]);
+                    strcpy(transfercfm.cause[k],transfer.cause[k]);
+                    strcpy(tCfmBth.status[k],transfercfm.status[k]);
+                    tCfmBth.confirmshares[k] = 0;  
+                    transfercfm.confirmbalance[k] = 0;
+                    continue;
+                }
+                WriteLog(0,"ShrRdc() OK.\n");
+
+                //step4:调用CltTransferCommissionFee函数，计算转让费用
+                if((nRt = CltTransferCommissionFee(&transfercfm, k, iDtlRows)) !=0)
+                {
+                    WriteLog(0, "[文件名=%s, 行数=%d, %s]\n", __FILE__, __LINE__, "OTC计算转让相关费用出错......");
+                }                
+                //strp5:调用LiqudiateTransferCommission函数，计算清算相关信息
+                if((nRt = LiqudiateOTCTransfer(&transfercfm, k)) != 0)
+                {
+                    WriteLog(0, "[文件名=%s, 行数=%d, %s]\n", __FILE__, __LINE__, "OTC计算转让清算相关信息出错......");
+                }
+                /*确认金额*/
+                transfercfm.confirmbalance[k] -= transfercfm.fare[k] ;
+
+                strcpy(tRqtHd.fundacco,transfer.otheracco[k]);
+                strcpy(tRqtHd.tradeacco,transfer.othertradeacco[k]);             
+                strcpy(tRqtHd.fundcode,transfer.fundcode[k]);
+                strcpy(tRqtHd.sharetype,transfer.sharetype[k]);
+                strcpy(tRqtHd.agencyno,transfer.otheragency[k]);
+                strcpy(tRqtHd.netno,transfer.otheragency[k]);
+                strcpy(tRqtHd.businflag,"15");    
+
+                /*对份额明细和确认明细（入）数组付值*/
+                if((nRt = OTCFillDtlIn(&tShrDtlBth,&nRowShrDtl,&tCfmDtlBth,&nRowCfmDtl,&tRqtHd,tCfmBth.date[k],
+                                tCfmBth.serialno[k],tCfmBth.incserialno[k],tCfmBth.confirmshares[k],transfer.tradeprice[k],iDtlRows)) != 0)
+                    return nRt;  
+                WriteLog(0, "[文件名=%s, 行数=%d, nRowShrDtl=%d]\n", __FILE__, __LINE__, nRowShrDtl);    
+                if((nRt = GetAgcCfmNo(transfer.otheragency[k],tCfmBth.incserialno[k])) == ERR_SET)
+                    return nRt;  
+                strcpy(transfer.status[k],"1");
+                /*修改静态份额表*/
+                EXEC SQL UPDATE TSTATICSHARES SET 
+                    F_REALSHARES = nvl(F_REALSHARES,0) - :tCfmBth.confirmshares[k],
+                                 D_LASTMODIFY = to_date(:GConfirmDate,'yyyymmdd')            
+                                     WHERE ROWID = :sStcRId[k];
+                WriteLog(0, "[文件名=%s, 行数=%d, %s]\n", __FILE__, __LINE__, "修改静态份额表结束.......");
+            }
+            else/*转入*/
+            {
+                //step4:调用CltTransferCommissionFee函数，计算转让费用
+                if((nRt = CltTransferCommissionFee(&transfercfm, k, 0)) !=0)
+                {
+                    WriteLog(0, "[文件名=%s, 行数=%d, %s]\n", __FILE__, __LINE__, "OTC计算转让相关费用出错......");
+                }                
+                //strp5:调用LiqudiateTransferCommission函数，计算清算相关信息
+                if((nRt = LiqudiateOTCTransfer(&transfercfm, k)) != 0)
+                {
+                    WriteLog(0, "[文件名=%s, 行数=%d, %s]\n", __FILE__, __LINE__, "OTC计算转让清算相关信息出错......");
+                }
+                strcpy(tCfmBth.outbusinflag[k],"20B");
+                /*确认金额*/
+                transfercfm.confirmbalance[k] -= transfercfm.fare[k] ;
+                strcpy(transfer.status[k],"1");
+            }            
+        }
+        /*修改申请数据*/
+        if((nRt = MdTransferCommission(&transfer,RowId,iRows)) == ERR_ORC)
+        {
+            EXEC SQL CLOSE Cur_OTC;
+            return ERR_ORC;
+        }        
+        /*增加确认表*/
+        if((nRt = AddTTransferCommissionCfm(&transfercfm,iRows)) == ERR_ORC)
+        {
+            EXEC SQL CLOSE Cur_OTC;
+            return ERR_ORC;
+        }
+
+        /*过滤掉失败的数据*/    
+        OTCDltFailData(&tCfmBth,sStcRId,NULL,NULL,
+                tShrCrtBth.lastshares,tShrCrtBth.lastfreezeshare,&iRows);
+        if(iRows > 0){
+
+            for(k = 0;k < iRows;k++)
+            {
+                if((nRt = GetCstNo(transfercfm.fundacco[tCfmBth.orgidx[k]],tCfmBth.custno[k])) == ERR_ORC)
+                    return nRt;
+            }   
+            FillOutCrtShr(&tCfmBth,&tShrCrtBth,&tStcShrBth,iRows);
+            WriteLog(0,"MdfShr() [out] OK.\n"); 
+            /*记流水*/      
+            if((nRt = AddShrCrt(&tShrCrtBth,iRows)) == ERR_ORC)
+            {
+                EXEC SQL CLOSE Cur_OTC;
+                return ERR_ORC;
+            }
+            WriteLog(0,"AddShrCrt() [out] OK.\n");              
+            memset(sBnsType,0,sizeof(sBnsType));
+            for(k = 0;k < iRows;k++)
+            {
+                if((fundinfo = GetFundInfo(tCfmBth.fundcode[k])) == NULL ){
+                    WriteLog(0,"Line:%d,%s\n",__LINE__,"无基金信息");
+                    GErrorNo=0001;
+                    sprintf(GErrorMessage,"无%s信息",GRepName);
+                    EXEC SQL CLOSE Cur_OTC;
+                    return ERR_SET;
+                }
+                if((nRt = GetCstNo(transfercfm.otheracco[tCfmBth.orgidx[k]],tCfmBth.custno[k])) == ERR_ORC)
+                    return nRt;
+                /*对入方赋值*/   
+                strcpy(tCfmBth.fundacco[k],transfercfm.otheracco[tCfmBth.orgidx[k]]);
+                strcpy(tCfmBth.businflag[k],"15");
+                strcpy(tCfmBth.cserialno[k],tCfmBth.incserialno[k]);
+                strcpy(tCfmBth.agencyno[k],transfercfm.otheragency[tCfmBth.orgidx[k]]);
+                strcpy(tCfmBth.netno[k],transfercfm.otheragency[tCfmBth.orgidx[k]]);
+                strcpy(tCfmBth.tradeacco[k],transfercfm.othertradeacco[tCfmBth.orgidx[k]]);
+                tCfmBth.custtype[k][0] = GetCustType(tCfmBth.fundacco[k]);
+                sBnsType[k][0] = GetBonusType(tCfmBth.fundacco[k],tCfmBth.tradeacco[k],tCfmBth.agencyno[k],
+                        tCfmBth.netno[k],fundinfo->bonustype[0],tCfmBth.fundcode[k]);
+
+                if(sBnsType[k][0]==ERR_ORC)
+                {
+                    EXEC SQL CLOSE Cur_OTC;
+                    return ERR_ORC;
+                }
+                tCfmBth.gainbalance[k] = 0.0;
+
+            }       
+
+            /*记流水（入）*/
+            if((nRt = AddCrtUArr(&tCfmBth,iRows) )== ERR_ORC)
+            {
+                EXEC SQL CLOSE Cur_OTC;
+                return ERR_ORC;
+            }
+            WriteLog(0,"AddCrtUArr() OK.\n");
+            /*调整入份额*/
+            AdjustInShrArr(&tCfmBth,sBnsType,&iRows);
+            /*修改静态份额表（入）*/
+            if((nRt = MdfShrUArr(&tCfmBth,sBnsType,iRows)) == ERR_ORC)
+            {
+                EXEC SQL CLOSE Cur_OTC;
+                return ERR_ORC;
+            }
+            WriteLog(0,"MdfShrUArr() Ok.\n");  
+            if((nRt = MdfFstInvest(tCfmBth.fundacco,tCfmBth.cdate,iRows)) == ERR_ORC)
+                return ERR_ORC;             
+        }/*end if(nRow > 0) */
+        if(nRowShrDtl > 0 ){
+            if((nRt = AddShrDtl(&tShrDtlBth,nRowShrDtl)) == ERR_ORC)
+            {
+                return ERR_ORC;
+            }
+            nRowShrDtl = 0;
+            memset(&tShrDtlBth,0,sizeof(tShrDtlBth));
+        }
+        if(strcmp(GRole,"A") == 0)
+        {
+            if(SendTuxedoMessage("12",iDealRows) == ERR_ORC)
+            {
+                return ERR_ORC;
+            }
+        }        
+        SetAgcCfmNo();
+        EXEC SQL COMMIT WORK;
+    }
+
+    WriteLog(0,"OTC转换确认处理结束，耗时 %.3lf 秒\n",DiffTime(time));
+    return 0;
+sqlerr:
+    EXEC SQL CLOSE Cur_OTC;
+    BatchError(7001,"");
+    return ERR_ORC;
+}
+
+/***************************************************************************
+  函数名称:sv_OTCShareInfo
+  函数功能:后台生成全量账户和全量份额信息
+  输入参数:
+  TPSVCINFO *rqst; 不用
+  输出参数:TPSVCINFO *rqst;
+  成功：0;OK
+  失败：1;错误原因
+  返 回 值:无
+ ***************************************************************************/
+int  sv_OTCShareInfo(TPSVCINFO *rqst)
+{
+    int nil=0;
+    char *sBuf = NULL;
+
+    sBuf = tpalloc("STRING",NULL,BUF_SIZE);
+    if(sBuf == NULL) {
+        WriteLog(0,"分配内存错误！");
+        return -1;
+    }
+
+    nil=CrtOTCCustInfo();
+    if (nil !=0 )
+    {
+        WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "调用CrtOTCCustInfo函数生成全量账户出错。" );
+        return -1;
+    }
+
+    nil=CrtOTCShareInfo();
+    if (nil !=0 )
+    {
+        WriteLog(0, "[%s:%d, %s]\n", __FILE__, __LINE__, "调用CrtOTCShareInfo函数全量份额信息出错。" );
+        return -1;
+    }
+
+    strcpy(sBuf,"0;OK!");
+    GClientID = NULL;
+    tpreturn(TPSUCCESS, 0, sBuf, 0L, 0);
+    return 0;
+}
+
+/*====================================================================================
+  函数名称：OTCFillDtlIn
+  函数功能:对份额明细、确认明细数组（入）付值
+  输入参数:
+  ...
+  输出参数:无 
+  返 回 值:0:正确；其他:失败
+  =====================================================================================*/
+
+int OTCFillDtlIn(TSHR_DTL_BTH* tShrDtlBth,int* nShrDtlIdx,TCFM_DTL_BTH* tCfmDtlBth,int* nCfmDtlIdx,
+        TREQUEST_S* tRqtHd,char* sRqtDt,int nRqtNo,char* sCfmNo,double fCfmNum,double fPrice,int nDtlRow)
+{
+    int nRowCfmDtl,nRowShrDtl,nBsFlg,nIdx,nRt = 0, nGather = FALSE, nNewRegDate=FALSE;
+    char sTmp[21]="",sShrSrc[2]="",sBsFlg[3]="";
+    double fNAVIn=0.0,fOrgNAV=0.0;
+    TFUNDINFO* tFndInfo=NULL;
+    TFUNDINFO* tFndInfoout = NULL;
+    int samecycle = 0; /*短期理财转换是否同周期转换*/
+    double fShrTmp=0.0,fShrIn = 0.0,fShrTtl = 0.0;
+    int iShrDtlFlag = 1;
+
+    TFARE_CDT tFareCdt;
+    TFARE_RST tFareRst;
+    TFEE_RATIO tFeeRt;  
+
+
+    nRowShrDtl = *nShrDtlIdx;
+    nRowCfmDtl = *nCfmDtlIdx;
+    nBsFlg = atoi(tRqtHd->businflag);
+    tFndInfo = GetFundInfo(tRqtHd->fundcode);
+    fOrgNAV = fPrice;
+    /*
+       switch(nBsFlg)
+       {
+       case 15://非交易过户入
+       strcpy(sShrSrc,SRC_CHG_OWN);//份额来源为：非交易过户
+       if(((GSysParameter.FJYGHKeepDetail == 0)||
+       ((strcmp(GSysParameter.ICBCFundacco,tRqtHd->fundacco)==0)&&
+       (GSysParameter.ICBCPawnDetail == 0))) //2011.04.21 hxx 保本基金非交易过户入不能合并明细
+       && (!(GSysParameter.ShortCycleFinance == 1 && tFndInfo->shortcyclefinance == 1))) //20120508 lingyz开通超短期理财基金，且当前基金为超短期理财基金必须保留明细
+       nGather = TRUE;                 	 
+       break;
+       default:
+       strcpy(sShrSrc,"");
+       break;
+       }
+       */
+    if(nGather)/*不保留原来明细，明细合并*/
+    {
+        nDtlRow = 1;
+        memset(&tFareCdt,0,sizeof(tFareCdt));
+        strcpy(tFareCdt.fundcode,tRqtHd->fundcode);
+        strcpy(tFareCdt.sharetype,tRqtHd->sharetype);
+        strcpy(tFareCdt.businflag,TRD_PCS);
+        tFareCdt.custtype[0] = GetCustType(tRqtHd->fundacco);
+        tFareCdt.saletype[0] = GetSaleType(tRqtHd->agencyno);       
+    }
+    for(nIdx = 0,gtShrDtlS = gtShrDtlSHd;nIdx < nDtlRow;nIdx++,gtShrDtlS = gtShrDtlS->tNxt)
+    {
+        if(nRowCfmDtl == ANUM)
+        {
+            if(AddCfmDtl(tCfmDtlBth,nRowCfmDtl) == ERR_ORC)
+                return ERR_ORC;
+            if (GSubTACalculateFee != 0)    
+                WriteCfmDtlToFile(tCfmDtlBth,nRowCfmDtl);                   
+            memset(tCfmDtlBth,0,sizeof(TCFM_DTL_BTH));
+            nRowCfmDtl = 0;
+        } 
+        if(nRowShrDtl == ANUM)
+        {
+            if(AddShrDtl(tShrDtlBth,nRowShrDtl) == ERR_ORC)
+                return ERR_ORC;
+            memset(tShrDtlBth,0,sizeof(TSHR_DTL_BTH));
+            nRowShrDtl = 0;
+        }               
+        /*入份额明细*/  
+
+        if((nRt = GetAgcCfmNo(tRqtHd->agencyno,sTmp)) == ERR_SET)
+            return nRt;
+        if(iShrDtlFlag == 1)
+        {
+            strcpy(tShrDtlBth->cdate[nRowShrDtl],GConfirmDate);
+            strcpy(tShrDtlBth->cserialno[nRowShrDtl],sTmp);
+            strcpy(tShrDtlBth->agencyno[nRowShrDtl],tRqtHd->agencyno);
+            strcpy(tShrDtlBth->netno[nRowShrDtl],tRqtHd->netno);
+            strcpy(tShrDtlBth->fundacco[nRowShrDtl],tRqtHd->fundacco);
+            strcpy(tShrDtlBth->tradeacco[nRowShrDtl],tRqtHd->tradeacco);                
+            strcpy(tShrDtlBth->fundcode[nRowShrDtl],tRqtHd->fundcode);
+            strcpy(tShrDtlBth->sharetype[nRowShrDtl],tRqtHd->sharetype);            
+            strcpy(tShrDtlBth->sourcetype[nRowShrDtl],gtShrDtlS->sSrcType);        
+            if(nGather)/*不保留原来明细，明细合并*/
+            {            
+                strcpy(tShrDtlBth->registdate[nRowShrDtl],GConfirmDate);
+                tShrDtlBth->remainshares[nRowShrDtl] = fCfmNum;
+                tShrDtlBth->oribalance[nRowShrDtl] = Precision(fCfmNum * fNAVIn,BP,MD_CLT_SHR,tRqtHd->fundcode);
+                tShrDtlBth->orishares[nRowShrDtl] = tShrDtlBth->remainshares[nRowShrDtl];
+                strcpy(tShrDtlBth->orisource[nRowShrDtl],SRC_PCS);  
+                tShrDtlBth->orirate[nRowShrDtl] = -1;
+                tShrDtlBth->cumulateagio[nRowShrDtl] = 1;
+                tShrDtlBth->oriagio[nRowShrDtl] = 1;
+
+                tFareCdt.balance = tShrDtlBth->oribalance[nRowShrDtl];
+                tFareCdt.refbalance = tFareCdt.balance;
+                tFareCdt.bckbalance = tFareCdt.balance; 
+                if(CltPcsFare(&tFareCdt,1.0,FALSE,NULL,&tFareRst,&tFeeRt) == ERR_ORC)
+                {
+                    return ERR_ORC;
+                }   
+
+                tShrDtlBth->maxallotratio[nRowShrDtl] = tFeeRt.fTrdRatio;
+                tShrDtlBth->minbackratio[nRowShrDtl] = tFeeRt.fBckRatio;
+                tShrDtlBth->minredeemratio[nRowShrDtl] = tFeeRt.fRdmRatio;
+                strcpy(tShrDtlBth->firstcserialno[nRowShrDtl],sTmp);
+                tShrDtlBth->managerfare[nRowShrDtl] = 0;
+                tShrDtlBth->interestshare[nRowShrDtl] = 0;
+                tShrDtlBth->evennetvalue[nRowShrDtl] = 1.0;
+                tShrDtlBth->backfare[nRowShrDtl] = 0;
+                strcpy(tShrDtlBth->protectflag[nRowShrDtl],"");
+                tShrDtlBth->totalbonus[nRowShrDtl] = 0;/*2011.04.21 hxx 历史采用默认值0,这里显示地给累计分红赋值*/
+                tShrDtlBth->costfare[nRowShrDtl] = 0;/*2011.04.21 hxx 对保本基金只有转换才能合并明细,而costfare对转换没有意义,所以填0*/
+            }
+            else
+            {       
+                if (nNewRegDate)    /*重新计算份额注册日期*/
+                    strcpy(tShrDtlBth->registdate[nRowShrDtl],GConfirmDate);
+                else    
+                    strcpy(tShrDtlBth->registdate[nRowShrDtl],gtShrDtlS->sRegDt);
+
+                tShrDtlBth->remainshares[nRowShrDtl] = gtShrDtlS->fCfmShr;
+                /*转托管、非交易过户：保留利息转份额和转换补差费 20090219 xuhu*/
+                tShrDtlBth->interestshare[nRowShrDtl] = gtShrDtlS->interestshare;
+                tShrDtlBth->backfare[nRowShrDtl] = gtShrDtlS->backfare;
+                tShrDtlBth->costfare[nRowShrDtl] = gtShrDtlS->fCostFare;/*2011.04.21 hxx 带走costfare*/
+                /*转托管及非交易过户将出份额明细的上次业绩提成日期带走*/
+                strcpy(tShrDtlBth->lastdeductdate[nRowShrDtl],gtShrDtlS->lastdeductdate);
+                /*20120508 lingyz超短期基金非交易过户和转托管业务把份额退出的收益赋值到入方的份额明细的收益中*/
+                tShrDtlBth->income[nRowShrDtl] = gtShrDtlS->income;
+
+                tShrDtlBth->oribalance[nRowShrDtl] = gtShrDtlS->fOrgBlc;
+                tShrDtlBth->orishares[nRowShrDtl] = Precision(gtShrDtlS->fOrgShr * (tShrDtlBth->remainshares[nRowShrDtl] / gtShrDtlS->fCfmShr),SP,MD_CLT_SHR,tRqtHd->fundcode);
+
+
+                strcpy(tShrDtlBth->orisource[nRowShrDtl],gtShrDtlS->sOrgSrc);
+                tShrDtlBth->orirate[nRowShrDtl] = gtShrDtlS->fOrgRt;
+                tShrDtlBth->cumulateagio[nRowShrDtl] = gtShrDtlS->fCmtAgio;
+                tShrDtlBth->oriagio[nRowShrDtl] = gtShrDtlS->fOrgAgio;
+                if(strcmp(tRqtHd->sharetype,"A") == 0)
+                    tShrDtlBth->maxallotratio[nRowShrDtl] = gtShrDtlS->fPcsRatio;
+                else if(strcmp(tRqtHd->sharetype,"B") == 0)
+                    tShrDtlBth->minbackratio[nRowShrDtl] = gtShrDtlS->fPcsRatio;
+                tShrDtlBth->minredeemratio[nRowShrDtl] = gtShrDtlS->fRdmRatio;
+                tShrDtlBth->evennetvalue[nRowShrDtl] = gtShrDtlS->fEvenNAV;
+
+                strcpy(tShrDtlBth->acceptmode[nRowShrDtl],gtShrDtlS->acceptmode);
+                strcpy(tShrDtlBth->bankno[nRowShrDtl],gtShrDtlS->bankno);
+                strcpy(tShrDtlBth->subfundmethod[nRowShrDtl],gtShrDtlS->subfundmethod);            
+                strcpy(tShrDtlBth->actcode[nRowShrDtl],gtShrDtlS->actcode);
+
+                tShrDtlBth->totalbonus[nRowShrDtl] = gtShrDtlS->totalbonus;
+
+                strcpy(tShrDtlBth->firstcserialno[nRowShrDtl],gtShrDtlS->firstcserialno);
+                strcpy(tShrDtlBth->fundtype[nRowShrDtl],gtShrDtlS->fundtype);
+                tShrDtlBth->managerfare[nRowShrDtl] = gtShrDtlS->managerfare;
+
+                strcpy(tShrDtlBth->protectflag[nRowShrDtl],gtShrDtlS->protectflag);
+
+            }
+            tShrDtlBth->orinetvalue[nRowShrDtl] = fOrgNAV;               
+            strcpy(tShrDtlBth->promiseno[nRowShrDtl],"");
+            tShrDtlBth->csharefare[nRowShrDtl] = gtShrDtlS->fCShrFare;
+            strcpy(tShrDtlBth->lastmodify[nRowShrDtl],GConfirmDate);
+            strcpy(tShrDtlBth->oriagency[nRowShrDtl],gtShrDtlS->sOrgAgc);
+            tShrDtlBth->apportionratio[nRowShrDtl] = gtShrDtlS->apportionratio;
+        }
+        /*入确认明细*/
+        strcpy(tCfmDtlBth->businflag[nRowCfmDtl],tRqtHd->businflag);
+        strcpy(tCfmDtlBth->cdate[nRowCfmDtl],GConfirmDate);
+        strcpy(tCfmDtlBth->cserialnototal[nRowCfmDtl],sCfmNo);
+        strcpy(tCfmDtlBth->agencyno[nRowCfmDtl],tRqtHd->agencyno);
+        strcpy(tCfmDtlBth->netno[nRowCfmDtl],tRqtHd->netno);
+        strcpy(tCfmDtlBth->fundacco[nRowCfmDtl],tRqtHd->fundacco);
+        strcpy(tCfmDtlBth->fundcode[nRowCfmDtl],tRqtHd->fundcode);
+        strcpy(tCfmDtlBth->sharetype[nRowCfmDtl],tRqtHd->sharetype);
+        strcpy(tCfmDtlBth->date[nRowCfmDtl],sRqtDt);
+        tCfmDtlBth->serialno[nRowCfmDtl] = nRqtNo;                          
+        strcpy(tCfmDtlBth->cserialno[nRowCfmDtl],sTmp);
+        /*20120524 lingyz超短期非交易过户和转托管业务把份额退出的收益赋值到入方的确认明细的收益中*/
+        /*TA1608 20120608Sp2 lingyz 20120726*/
+        if(nBsFlg != 16 )
+        {
+            tCfmDtlBth->assignedincome[nRowCfmDtl] = gtShrDtlS->income;
+            tCfmDtlBth->confirmincome[nRowCfmDtl] = gtShrDtlS->income;
+        }
+        if(iShrDtlFlag == 1)
+        {
+            tCfmDtlBth->confirmshares[nRowCfmDtl] = tShrDtlBth->remainshares[nRowShrDtl];
+            strcpy(tCfmDtlBth->registdate[nRowCfmDtl],tShrDtlBth->registdate[nRowShrDtl]);  
+            nRowShrDtl++;
+        }
+        else
+        {
+            tCfmDtlBth->confirmshares[nRowCfmDtl] = 0;
+            if(nGather)
+            {
+                strcpy(tCfmDtlBth->registdate[nRowShrDtl],GConfirmDate);                            
+                tCfmDtlBth->confirmbalance[nRowCfmDtl] = fCfmNum;
+            }
+            else
+            {    
+                if(nNewRegDate)
+                {
+                    strcpy(tCfmDtlBth->registdate[nRowShrDtl],GConfirmDate);
+                }
+                else
+                {
+                    strcpy(tCfmDtlBth->registdate[nRowCfmDtl],gtShrDtlS->sRegDt); 
+                }
+                tCfmDtlBth->confirmbalance[nRowCfmDtl] = gtShrDtlS->fCfmBlc;
+            }
+        }
+        nRowCfmDtl++;
+
+    }
+
+    *nShrDtlIdx = nRowShrDtl;
+    *nCfmDtlIdx = nRowCfmDtl;
+    return nRt;
+}
+
+/*====================================================================================
+  函数名称：OTCDltFailData
+  函数功能:去除失败的确认数据 
+  输入参数:
+  ...
+  输出参数:无 
+  返 回 值:0:正确；其他:失败
+  =====================================================================================*/
+int OTCDltFailData(TCFM_BTH* tCfmBth,char sStcRId[][RID+1],double* fStcShr,char sBns[][2],double* fCrtShr,double* fCrtFShr,int* Rows)
+{
+    int k,n;
+    /*对于失败数据和OTC转入数据进行过滤，不需要记份额变化*/    
+    for(n = 0;n < *Rows;n++){
+        if((tCfmBth->status[n][0] != '1') || (strcmp(tCfmBth->outbusinflag[n],"20B") == 0)){
+            for(k = n;k < *Rows - 1;k++){
+                strcpy(tCfmBth->custno[k],tCfmBth->custno[k + 1]);
+                strcpy(tCfmBth->custtype[k],tCfmBth->custtype[k + 1]);                  
+                strcpy(tCfmBth->fundacco[k],tCfmBth->fundacco[k + 1]);
+                strcpy(tCfmBth->tradeacco[k],tCfmBth->tradeacco[k + 1]);
+                strcpy(tCfmBth->fundcode[k],tCfmBth->fundcode[k + 1]);
+                strcpy(tCfmBth->sharetype[k],tCfmBth->sharetype[k + 1]);
+                strcpy(tCfmBth->agencyno[k],tCfmBth->agencyno[k + 1]);
+                strcpy(tCfmBth->netno[k],tCfmBth->netno[k + 1]);
+                strcpy(tCfmBth->cdate[k],tCfmBth->cdate[k + 1]);
+                strcpy(tCfmBth->cserialno[k],tCfmBth->cserialno[k + 1]);
+                tCfmBth->confirmshares[k] = tCfmBth->confirmshares[k + 1];
+                tCfmBth->confirmbalance[k] = tCfmBth->confirmbalance[k + 1];
+                tCfmBth->netvalue[k] = tCfmBth->netvalue[k + 1];    
+                tCfmBth->tradefare[k] = tCfmBth->tradefare[k + 1];
+                tCfmBth->tafare[k] = tCfmBth->tafare[k + 1];
+                tCfmBth->stamptax[k] = tCfmBth->stamptax[k + 1];
+                tCfmBth->backfare[k] = tCfmBth->backfare[k + 1];
+                tCfmBth->otherfare[k] = tCfmBth->otherfare[k + 1];              
+                tCfmBth->totalfare[k] = tCfmBth->totalfare[k + 1];
+                tCfmBth->interest[k] = tCfmBth->interest[k + 1];
+                tCfmBth->interesttax[k] = tCfmBth->interesttax[k + 1];
+                strcpy(tCfmBth->status[k],tCfmBth->status[k + 1]);
+                strcpy(tCfmBth->cause[k],tCfmBth->cause[k + 1]);
+                strcpy(tCfmBth->taflag[k],tCfmBth->taflag[k + 1]);
+                tCfmBth->gainbalance[k] = tCfmBth->gainbalance[k + 1];              
+                tCfmBth->orifare[k] = tCfmBth->orifare[k + 1];
+                tCfmBth->unbalance[k] = tCfmBth->unbalance[k + 1];              
+                tCfmBth->unshares[k] = tCfmBth->unshares[k + 1];
+                strcpy(tCfmBth->requestendflag[k],tCfmBth->requestendflag[k + 1]);
+                strcpy(tCfmBth->businflag[k],tCfmBth->businflag[k + 1]);                    
+                strcpy(tCfmBth->outbusinflag[k],tCfmBth->outbusinflag[k + 1]); 
+                strcpy(tCfmBth->date[k],tCfmBth->date[k + 1]);
+                tCfmBth->serialno[k] = tCfmBth->serialno[k + 1];
+
+                strcpy(tCfmBth->incserialno[k],tCfmBth->incserialno[k + 1]);    
+                strcpy(tCfmBth->registdate[k],tCfmBth->registdate[k + 1]);                  
+                strcpy(tCfmBth->requestdate[k],tCfmBth->requestdate[k + 1]);
+                strcpy(tCfmBth->requestno[k],tCfmBth->requestno[k + 1]);
+                strcpy(tCfmBth->othercode[k],tCfmBth->othercode[k + 1]);
+                tCfmBth->orgidx[k] = tCfmBth->orgidx[k] + 1;     
+                tCfmBth->cumulateagio[k] = tCfmBth->cumulateagio[k + 1];
+                tCfmBth->oriagio[k] = tCfmBth->oriagio[k + 1];
+                tCfmBth->purchaseratio[k] = tCfmBth->purchaseratio[k + 1];
+                tCfmBth->redeemratio[k] = tCfmBth->redeemratio[k + 1];
+                tCfmBth->orirate[k] = tCfmBth->orirate[k + 1];  
+                strcpy(tCfmBth->promiseno[k],tCfmBth->promiseno[k + 1]); 
+                strcpy(tCfmBth->rationno[k],tCfmBth->rationno[k + 1]);
+                tCfmBth->evennetvalue[k] = tCfmBth->evennetvalue[k + 1];
+                strcpy(tCfmBth->protectflag[k],tCfmBth->protectflag[k + 1]);
+                /*有关货币基金一些信息的移动 2003.11.11*/       
+                tCfmBth->chincome[k] = tCfmBth->chincome[k + 1];
+                tCfmBth->chshare[k] = tCfmBth->chshare[k + 1];
+                tCfmBth->confirmincome[k] = tCfmBth->confirmincome[k + 1];
+                strcpy(tCfmBth->acceptmode[k],tCfmBth->acceptmode[k + 1]);
+                strcpy(tCfmBth->actcode[k],tCfmBth->actcode[k + 1]);
+                strcpy(tCfmBth->fundtype[k],tCfmBth->fundtype[k + 1]);
+                strcpy(tCfmBth->bankno[k],tCfmBth->bankno[k + 1]);
+                strcpy(tCfmBth->subfundmethod[k],tCfmBth->subfundmethod[k + 1]);
+                tCfmBth->oritradefare[k] = tCfmBth->oritradefare[k + 1];
+                tCfmBth->oritafare[k] = tCfmBth->oritafare[k + 1];
+                tCfmBth->oribackfare[k] = tCfmBth->oribackfare[k + 1];
+                tCfmBth->oriotherfare1[k] = tCfmBth->oriotherfare1[k + 1];
+                tCfmBth->fundfare[k] = tCfmBth->fundfare[k + 1];
+                tCfmBth->returnfare[k] = tCfmBth->returnfare[k + 1];
+                tCfmBth->protectbalance[k] = tCfmBth->protectbalance[k + 1];
+                tCfmBth->protectshare[k] = tCfmBth->protectshare[k + 1];
+                tCfmBth->registfare[k] = tCfmBth->registfare[k + 1];
+                tCfmBth->fValueAddedFare[k] = tCfmBth->fValueAddedFare[k + 1]; /*专户增值费 lingyz 20120412*/
+                tCfmBth->newincome[k] = tCfmBth->newincome[k + 1];
+                tCfmBth->LongRegistPay[k] = tCfmBth->LongRegistPay[k + 1];
+
+                if(sStcRId != NULL)
+                    strcpy(sStcRId[k] ,sStcRId[k + 1]);           
+                if(fStcShr != NULL)
+                    fStcShr[k] = fStcShr[k + 1];
+                if(sBns != NULL)
+                    strcpy(sBns[k],sBns[k + 1]);                   
+                if(fCrtShr != NULL){
+                    fCrtShr[k] = fCrtShr[k + 1];                    
+                    fCrtFShr[k] = fCrtFShr[k + 1];
+                }
+            }
+            n--;
+            (*Rows)--;  
+        }
+    }
+    return 0;
+}
